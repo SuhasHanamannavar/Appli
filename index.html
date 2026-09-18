@@ -330,8 +330,15 @@
   /* ============ TRANSITION SECTION ============ */
   .transition {
     position: relative;
-    height: 140vh;
-    background: var(--bg);
+    height: 160vh;
+    background: var(--bg) url('https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/fe3b7fef8bf440678760652cfeb088ff.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=ZgsfP19eqLKkSvL3NE0I2hB%2BwAQ%3D') center/cover no-repeat fixed;
+  }
+  .transition::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 15, 18, 0.25);
+    pointer-events: none;
   }
   .transition-sticky {
     position: sticky;
