@@ -1579,8 +1579,10 @@
     // === PHASE 1: Ancient Temple (0 - 0.3) ===
     if (p < 0.3) {
       var t = p / 0.3;
-      var eT = easeInOut(t);
+      var eT = 0.6 + easeInOut(t) * 0.4; // Start visible, intensify
+      var fadeOut = Math.max(0, 1 - t * 1.5);
 
+      // Background gradient - ancient temple
       var bg = ctx.createLinearGradient(0, 0, 0, H);
       bg.addColorStop(0, lerpColor('#1a0f08', '#2a1a0e', eT));
       bg.addColorStop(0.6, lerpColor('#0a0604', '#1a0f08', eT));
@@ -1588,11 +1590,12 @@
       ctx.fillStyle = bg;
       ctx.fillRect(0, 0, W, H);
 
+      // Ancient pillars silhouette
       drawPillars(eT);
 
-      // Light rays
+      // Light rays from above
       ctx.save();
-      ctx.globalAlpha = 0.15 * eT;
+      ctx.globalAlpha = 0.12 * eT;
       for (var r = 0; r < 5; r++) {
         var rayGrad = ctx.createLinearGradient(W * (0.2 + r * 0.15), 0, W * (0.25 + r * 0.15), H);
         rayGrad.addColorStop(0, '#d4a84b');
@@ -1608,28 +1611,28 @@
       }
       ctx.restore();
 
-      // Dust particles
+      // Floating dust particles
       ctx.save();
       for (var i = 0; i < particles.length; i++) {
         var pt = particles[i];
         var px = pt.x * W + Math.sin(p * 8 + pt.seed * 10) * 20;
         var py = pt.y * H + Math.cos(p * 6 + pt.seed * 8) * 15;
-        ctx.globalAlpha = 0.3 * eT;
+        ctx.globalAlpha = 0.25 * eT;
         ctx.fillStyle = '#d4a84b';
         ctx.fillRect(px, py, pt.size * 0.6, pt.size * 0.6);
       }
       ctx.restore();
 
-      // Bow forming
-      if (t > 0.3) {
-        var bowT = (t - 0.3) / 0.7;
+      // Bow forming as scroll progresses
+      if (t > 0.15) {
+        var bowT = Math.min(1, (t - 0.15) / 0.5);
         drawBow(bowT);
       }
 
-      showChapter(chap1, Math.min(1, t * 1.5));
+      showChapter(chap1, Math.min(1, 0.5 + t * 1.2) * fadeOut);
       showChapter(chap2, 0);
       showChapter(chap3, 0);
-      if (scrollHint) scrollHint.style.opacity = 1 - t * 0.8;
+      if (scrollHint) scrollHint.style.opacity = fadeOut;
     }
 
     // === PHASE 2: Arrow Flight (0.3 - 0.65) ===
@@ -1780,7 +1783,7 @@
 
   function drawPillars(t) {
     ctx.save();
-    ctx.globalAlpha = 0.4 * t;
+    ctx.globalAlpha = 0.55 * t;
     for (var i = 0; i < 5; i++) {
       var px = W * (0.1 + i * 0.2);
       var pillarGrad = ctx.createLinearGradient(px - 30, 0, px + 30, 0);
