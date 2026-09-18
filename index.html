@@ -2,35 +2,33 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1a1410">
 <title>FARLANDS — Hackathon 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Source+Sans+3:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --ancient-gold: #c9923c;
-    --ancient-gold-soft: rgba(201, 146, 60, 0.18);
+    --ancient-gold: #d4a84b;
+    --ancient-gold-bright: #f0d080;
     --ancient-stone: #8b7355;
-    --ancient-deep: #3d2e1f;
-    --ancient-bg: #1a1410;
-    --farlands-green: #5d9c3a;
-    --farlands-sky: #7ec0ee;
+    --ancient-deep: #2a1f14;
+    --ancient-bg: #120c08;
+    --farlands-green: #6ab04c;
+    --farlands-green-dark: #4a7c35;
+    --farlands-sky: #7ec8e3;
     --farlands-dirt: #8b6914;
-    --farlands-stone: #7f7f7f;
-    --farlands-bg: #0d1b0a;
-    --text-light: #f5f0e6;
-    --text-muted: rgba(245, 240, 230, 0.6);
-    --border-ancient: rgba(201, 146, 60, 0.25);
-    --border-farlands: rgba(93, 156, 58, 0.3);
+    --farlands-stone: #808080;
+    --farlands-bg: #0a1808;
+    --farlands-redstone: #c0392b;
+    --text-light: #f8f4e8;
+    --text-muted: rgba(248, 244, 232, 0.55);
   }
 
-  html {
-    scroll-behavior: smooth;
-    overflow-x: hidden;
-  }
+  html { scroll-behavior: smooth; overflow-x: hidden; }
 
   body {
     font-family: 'Source Sans 3', sans-serif;
@@ -38,6 +36,51 @@
     color: var(--text-light);
     overflow-x: hidden;
     line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ============ LOADING SCREEN ============ */
+  .loader {
+    position: fixed;
+    inset: 0;
+    background: #0a0806;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    transition: opacity 0.6s, visibility 0.6s;
+  }
+  .loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-arrow {
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--ancient-gold), var(--ancient-gold-bright));
+    position: relative;
+    animation: arrowLoad 1.2s ease-in-out infinite;
+  }
+  .loader-arrow::before {
+    content: '';
+    position: absolute;
+    right: -6px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-left: 10px solid var(--ancient-gold-bright);
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+  }
+  @keyframes arrowLoad {
+    0% { transform: translateX(-40px); opacity: 0; }
+    50% { opacity: 1; }
+    100% { transform: translateX(40px); opacity: 0; }
+  }
+  .loader-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ancient-gold);
   }
 
   /* ============ NAVIGATION ============ */
@@ -47,228 +90,209 @@
     left: 0;
     right: 0;
     z-index: 1000;
-    padding: 20px 40px;
+    padding: 18px 32px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    mix-blend-mode: difference;
+    transition: all 0.5s ease;
   }
-
+  .nav.scrolled {
+    background: rgba(10, 8, 6, 0.9);
+    backdrop-filter: blur(12px);
+    padding: 14px 32px;
+  }
   .nav-logo {
     font-family: 'Playfair Display', serif;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     color: #fff;
+    white-space: nowrap;
   }
-
   .nav-logo span {
     font-family: 'Syne', sans-serif;
     font-weight: 800;
-    font-size: 24px;
+    color: var(--ancient-gold);
   }
-
+  .nav-logo .arrow { color: rgba(255,255,255,0.4); margin: 0 6px; }
   .nav-links {
     display: flex;
-    gap: 32px;
+    gap: 28px;
     list-style: none;
   }
-
   .nav-links a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: opacity 0.3s;
-    opacity: 0.8;
-  }
-
-  .nav-links a:hover { opacity: 1; }
-
-  .nav-cta {
-    padding: 10px 24px;
-    border: 1.5px solid #fff;
-    border-radius: 2px;
-    color: #fff;
+    color: rgba(255,255,255,0.8);
     text-decoration: none;
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1.5px;
+    background: var(--ancient-gold);
+    transition: width 0.3s;
+  }
+  .nav-links a:hover { color: #fff; }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    padding: 10px 22px;
+    border: 1.5px solid var(--ancient-gold);
+    color: var(--ancient-gold);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    font-family: 'Syne', sans-serif;
+  }
+  .nav-cta:hover {
+    background: var(--ancient-gold);
+    color: var(--ancient-deep);
+  }
+  .nav-farlands .nav-logo span { color: var(--farlands-green); }
+  .nav-farlands .nav-cta {
+    border-color: var(--farlands-green);
+    color: var(--farlands-green);
+  }
+  .nav-farlands .nav-cta:hover {
+    background: var(--farlands-green);
+    color: #fff;
+  }
+  .nav-farlands .nav-links a::after { background: var(--farlands-green); }
+
+  .nav-mobile-toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+  }
+  .nav-mobile-toggle span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: #fff;
     transition: all 0.3s;
   }
 
-  .nav-cta:hover {
-    background: #fff;
-    color: #000;
-  }
-
-  /* ============ HERO — VISHVAKARMA ERA ============ */
-  .hero-ancient {
+  /* ============ CINEMATIC JOURNEY ============ */
+  .journey {
     position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background: var(--ancient-bg);
-  }
-
-  .hero-ancient-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/528b3a31188342f5bf508b62e36e0a93.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298749&x-signature=r2VWuN1jAaLBj5Y8XTo4BBme9kg%3D');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.55;
-    transform: scale(1.1);
-    transition: transform 0.1s linear;
-  }
-
-  .hero-ancient-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      180deg,
-      rgba(26, 20, 16, 0.3) 0%,
-      rgba(26, 20, 16, 0.6) 50%,
-      rgba(26, 20, 16, 0.95) 100%
-    );
-  }
-
-  .hero-ancient-grain {
-    position: absolute;
-    inset: 0;
-    opacity: 0.08;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    max-width: 900px;
-    padding: 0 24px;
-  }
-
-  .hero-eyebrow {
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--ancient-gold);
-    margin-bottom: 28px;
-    font-weight: 600;
-  }
-
-  .hero-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(48px, 8vw, 110px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 24px;
-    background: linear-gradient(180deg, #f5e6c8 0%, var(--ancient-gold) 60%, #8b6914 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .hero-subtitle {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(18px, 2.5vw, 28px);
-    font-weight: 400;
-    font-style: italic;
-    color: var(--text-muted);
-    margin-bottom: 40px;
-    letter-spacing: 0.02em;
-  }
-
-  .hero-desc {
-    font-size: 16px;
-    color: rgba(245, 240, 230, 0.7);
-    max-width: 560px;
-    margin: 0 auto 48px;
-    line-height: 1.8;
-  }
-
-  .scroll-indicator {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    color: var(--ancient-gold);
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    animation: floatDown 2s ease-in-out infinite;
-  }
-
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(180deg, var(--ancient-gold), transparent);
-  }
-
-  @keyframes floatDown {
-    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
-    50% { transform: translateX(-50%) translateY(10px); opacity: 0.6; }
-  }
-
-  /* ============ TRANSITION SECTION ============ */
-  .transition-section {
-    position: relative;
-    height: 200vh;
+    height: 400vh;
     background: #000;
   }
-
-  .transition-sticky {
+  .journey-sticky {
     position: sticky;
     top: 0;
     height: 100vh;
     overflow: hidden;
   }
-
-  .transition-canvas {
+  #journeyCanvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
+    display: block;
   }
-
-  .transition-overlay {
+  .journey-overlay {
     position: absolute;
     inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     pointer-events: none;
     z-index: 2;
   }
-
-  .transition-text {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 5vw, 72px);
-    font-weight: 700;
+  .journey-chapter {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     text-align: center;
     opacity: 0;
-    transition: opacity 0.5s;
+    transition: opacity 0.5s ease;
+    width: 90%;
+    max-width: 700px;
+  }
+  .journey-chapter .chapter-label {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.7;
+  }
+  .journey-chapter .chapter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 56px);
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .journey-chapter .chapter-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(14px, 2vw, 20px);
+    margin-top: 12px;
+    opacity: 0.6;
+  }
+  .chapter-ancient .chapter-label { color: var(--ancient-gold); }
+  .chapter-ancient .chapter-title {
+    background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .chapter-journey .chapter-label { color: #c9a860; }
+  .chapter-journey .chapter-title {
     background: linear-gradient(90deg, var(--ancient-gold), var(--farlands-green));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    mix-blend-mode: screen;
+  }
+  .chapter-farlands .chapter-label { color: var(--farlands-green); }
+  .chapter-farlands .chapter-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    background: linear-gradient(180deg, #fff, var(--farlands-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
-  .transition-text.visible { opacity: 1; }
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    animation: hintFloat 2s ease-in-out infinite;
+  }
+  .scroll-hint-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
+  }
+  @keyframes hintFloat {
+    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+    50% { transform: translateX(-50%) translateY(8px); opacity: 0.5; }
+  }
 
   /* ============ FARLANDS HERO ============ */
   .farlands-hero {
@@ -279,874 +303,840 @@
     overflow: hidden;
     background: var(--farlands-bg);
   }
-
   .farlands-bg {
     position: absolute;
     inset: 0;
     background-image: url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/6262354c5efa45089dc1ac7ea69e87d7.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298743&x-signature=0yNJpxAPRnzq68WafxcWQm1TwPc%3D');
     background-size: cover;
     background-position: center;
-    opacity: 0.6;
+    opacity: 0.55;
   }
-
   .farlands-overlay {
     position: absolute;
     inset: 0;
     background: linear-gradient(
       90deg,
-      rgba(13, 27, 10, 0.92) 0%,
-      rgba(13, 27, 10, 0.7) 40%,
-      rgba(13, 27, 10, 0.3) 70%,
-      rgba(13, 27, 10, 0.1) 100%
+      rgba(10, 24, 8, 0.95) 0%,
+      rgba(10, 24, 8, 0.75) 35%,
+      rgba(10, 24, 8, 0.4) 65%,
+      rgba(10, 24, 8, 0.15) 100%
     );
   }
-
   .farlands-content {
     position: relative;
     z-index: 2;
-    padding: 120px 60px 120px 80px;
-    max-width: 700px;
+    padding: 120px 48px 120px 64px;
+    max-width: 680px;
   }
-
   .farlands-eyebrow {
     font-family: 'Syne', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--farlands-green);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     font-weight: 700;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 14px;
   }
-
   .farlands-eyebrow::before {
     content: '';
     display: block;
-    width: 40px;
+    width: 36px;
     height: 2px;
     background: var(--farlands-green);
   }
-
   .farlands-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(52px, 7.5vw, 100px);
+    font-size: clamp(44px, 7vw, 88px);
     font-weight: 800;
     line-height: 0.95;
     letter-spacing: -0.03em;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
   }
-
-  .farlands-title .line1 {
+  .farlands-title .l1 { display: block; color: #fff; }
+  .farlands-title .l2 {
     display: block;
-    color: #fff;
-  }
-
-  .farlands-title .line2 {
-    display: block;
-    background: linear-gradient(90deg, #a8e063, #56ab2f);
+    background: linear-gradient(90deg, #a8e063, #4a9c28);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .farlands-tagline {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.75);
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.72);
     margin-bottom: 32px;
     line-height: 1.7;
-    font-weight: 400;
   }
-
   .farlands-meta {
     display: flex;
-    gap: 48px;
-    margin-bottom: 40px;
+    gap: 40px;
+    margin-bottom: 36px;
     flex-wrap: wrap;
   }
-
-  .meta-item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-  }
-
+  .meta-item { display: flex; flex-direction: column; gap: 4px; }
   .meta-label {
-    font-size: 10px;
+    font-size: 9px;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgba(255, 255, 255, 0.45);
     font-weight: 600;
   }
-
   .meta-value {
     font-family: 'Syne', sans-serif;
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 700;
     color: #fff;
   }
-
   .btn-primary {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 36px;
+    gap: 10px;
+    padding: 14px 30px;
     background: var(--farlands-green);
     color: #fff;
     text-decoration: none;
     font-family: 'Syne', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     border: none;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
   }
-
   .btn-primary:hover {
-    background: #6fb848;
+    background: #7cc95a;
     transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(93, 156, 58, 0.4);
+    box-shadow: 0 8px 30px rgba(106, 176, 76, 0.4);
   }
-
   .btn-secondary {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    padding: 16px 36px;
+    gap: 10px;
+    padding: 14px 30px;
     background: transparent;
-    color: #fff;
+    color: rgba(255,255,255,0.8);
     text-decoration: none;
     font-family: 'Syne', sans-serif;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
     cursor: pointer;
     transition: all 0.3s;
-    margin-left: 16px;
+    margin-left: 12px;
   }
-
   .btn-secondary:hover {
-    border-color: #fff;
-    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255,255,255,0.6);
+    color: #fff;
+    background: rgba(255,255,255,0.06);
   }
 
   /* ============ SECTION COMMON ============ */
   .section {
-    padding: 140px 80px;
+    padding: 120px 64px;
     position: relative;
   }
-
-  .section-header {
-    margin-bottom: 80px;
-    max-width: 700px;
+  .section-head {
+    margin-bottom: 64px;
+    max-width: 680px;
   }
-
-  .section-number {
+  .section-num {
     font-family: 'Syne', sans-serif;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.25em;
     color: var(--farlands-green);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
-
   .section-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: clamp(32px, 4.5vw, 56px);
     font-weight: 800;
     line-height: 1.05;
     letter-spacing: -0.02em;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
+    color: #fff;
   }
-
   .section-desc {
-    font-size: 17px;
-    color: rgba(255, 255, 255, 0.65);
-    line-height: 1.7;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    line-height: 1.75;
   }
 
-  /* ============ THEME SECTION ============ */
-  .theme-section {
-    background: var(--farlands-bg);
-  }
-
-  .theme-grid {
+  /* ============ TRACKS ============ */
+  .tracks-section { background: var(--farlands-bg); }
+  .tracks-grid {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    gap: 24px;
+    gap: 20px;
   }
-
-  .theme-card {
+  .track-card {
     position: relative;
-    padding: 40px 32px;
-    border: 1px solid var(--border-farlands);
-    background: rgba(13, 27, 10, 0.6);
+    padding: 36px 28px;
+    border: 1px solid rgba(106, 176, 76, 0.2);
+    background: rgba(10, 24, 8, 0.5);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
   }
-
-  .theme-card::before {
+  .track-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
     background: var(--farlands-green);
     transform: scaleX(0);
     transform-origin: left;
     transition: transform 0.4s;
   }
-
-  .theme-card:hover::before { transform: scaleX(1); }
-  .theme-card:hover {
-    transform: translateY(-6px);
+  .track-card:hover::before { transform: scaleX(1); }
+  .track-card:hover {
+    transform: translateY(-5px);
     border-color: var(--farlands-green);
-    background: rgba(93, 156, 58, 0.08);
+    background: rgba(106, 176, 76, 0.06);
   }
+  .track-card.t1 { grid-column: span 5; }
+  .track-card.t2 { grid-column: span 4; }
+  .track-card.t3 { grid-column: span 3; }
+  .track-card.t4 { grid-column: span 4; }
+  .track-card.t5 { grid-column: span 8; }
 
-  .theme-card:nth-child(1) { grid-column: span 5; }
-  .theme-card:nth-child(2) { grid-column: span 4; }
-  .theme-card:nth-child(3) { grid-column: span 3; }
-  .theme-card:nth-child(4) { grid-column: span 4; }
-  .theme-card:nth-child(5) { grid-column: span 8; }
+  .track-icon {
+    width: 44px; height: 44px;
+    margin-bottom: 18px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(106, 176, 76, 0.12);
+    border: 1px solid rgba(106, 176, 76, 0.2);
+  }
+  .track-icon svg { width: 22px; height: 22px; stroke: var(--farlands-green); fill: none; stroke-width: 2; }
+  .track-card h3 {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    margin-bottom: 10px; color: #fff;
+  }
+  .track-card p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.58);
+    line-height: 1.7;
+  }
+  .mini-blocks {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 3px;
+    margin-top: 20px;
+    opacity: 0.35;
+  }
+  .mini-blocks span {
+    aspect-ratio: 1;
+    background: var(--farlands-green);
+  }
+  .mini-blocks span:nth-child(2n) { background: #4a7c35; }
+  .mini-blocks span:nth-child(3n) { background: var(--farlands-dirt); }
+  .mini-blocks span:nth-child(5n) { background: #7ec8e3; }
+  .mini-blocks span:nth-child(7n) { background: var(--farlands-redstone); }
 
-  .theme-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 20px;
+  /* ============ MOBS SHOWCASE ============ */
+  .mobs-section {
+    background: linear-gradient(180deg, var(--farlands-bg) 0%, #081406 100%);
+    overflow: hidden;
+  }
+  .mobs-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .mob-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.02);
+    overflow: hidden;
+    transition: all 0.4s;
+  }
+  .mob-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(106, 176, 76, 0.4);
+  }
+  .mob-art {
+    position: absolute;
+    inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(93, 156, 58, 0.15);
-    border: 1px solid var(--border-farlands);
   }
-
-  .theme-icon svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--farlands-green);
-    fill: none;
-    stroke-width: 2;
+  .mob-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
   }
-
-  .theme-card h3 {
+  .mob-name {
     font-family: 'Syne', sans-serif;
-    font-size: 22px;
+    font-size: 18px;
     font-weight: 700;
-    margin-bottom: 12px;
     color: #fff;
   }
-
-  .theme-card p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.7;
+  .mob-role {
+    font-size: 12px;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.05em;
+  }
+  /* Pixel art characters */
+  .pixel-steve {
+    width: 8px; height: 8px;
+    box-shadow:
+      16px 0 0 #2a1a0a, 24px 0 0 #2a1a0a, 32px 0 0 #2a1a0a, 40px 0 0 #2a1a0a,
+      8px 8px 0 #2a1a0a, 16px 8px 0 #2a1a0a, 24px 8px 0 #2a1a0a, 32px 8px 0 #2a1a0a, 40px 8px 0 #2a1a0a, 48px 8px 0 #2a1a0a,
+      8px 16px 0 #d4a574, 16px 16px 0 #d4a574, 24px 16px 0 #d4a574, 32px 16px 0 #d4a574, 40px 16px 0 #d4a574, 48px 16px 0 #d4a574,
+      8px 24px 0 #d4a574, 16px 24px 0 #fff, 24px 24px 0 #d4a574, 32px 24px 0 #d4a574, 40px 24px 0 #fff, 48px 24px 0 #d4a574,
+      8px 32px 0 #d4a574, 16px 32px 0 #d4a574, 24px 32px 0 #6b4423, 32px 32px 0 #6b4423, 40px 32px 0 #d4a574, 48px 32px 0 #d4a574,
+      8px 40px 0 #3498db, 16px 40px 0 #3498db, 24px 40px 0 #3498db, 32px 40px 0 #3498db, 40px 40px 0 #3498db, 48px 40px 0 #3498db,
+      8px 48px 0 #3498db, 16px 48px 0 #2980b9, 24px 48px 0 #3498db, 32px 48px 0 #3498db, 40px 48px 0 #2980b9, 48px 48px 0 #3498db,
+      16px 56px 0 #2c3e50, 24px 56px 0 #2c3e50, 32px 56px 0 #2c3e50, 40px 56px 0 #2c3e50,
+      16px 64px 0 #2c3e50, 24px 64px 0 #2c3e50, 32px 64px 0 #2c3e50, 40px 64px 0 #2c3e50;
+  }
+  .pixel-herobrine {
+    width: 8px; height: 8px;
+    box-shadow:
+      16px 0 0 #1a1a1a, 24px 0 0 #1a1a1a, 32px 0 0 #1a1a1a, 40px 0 0 #1a1a1a,
+      8px 8px 0 #1a1a1a, 16px 8px 0 #1a1a1a, 24px 8px 0 #1a1a1a, 32px 8px 0 #1a1a1a, 40px 8px 0 #1a1a1a, 48px 8px 0 #1a1a1a,
+      8px 16px 0 #c4a06a, 16px 16px 0 #c4a06a, 24px 16px 0 #c4a06a, 32px 16px 0 #c4a06a, 40px 16px 0 #c4a06a, 48px 16px 0 #c4a06a,
+      8px 24px 0 #c4a06a, 16px 24px 0 #fff, 24px 24px 0 #c4a06a, 32px 24px 0 #c4a06a, 40px 24px 0 #fff, 48px 24px 0 #c4a06a,
+      8px 32px 0 #c4a06a, 16px 32px 0 #c4a06a, 24px 32px 0 #5a3a1a, 32px 32px 0 #5a3a1a, 40px 32px 0 #c4a06a, 48px 32px 0 #c4a06a,
+      8px 40px 0 #2980b9, 16px 40px 0 #2980b9, 24px 40px 0 #2980b9, 32px 40px 0 #2980b9, 40px 40px 0 #2980b9, 48px 40px 0 #2980b9,
+      8px 48px 0 #2980b9, 16px 48px 0 #1e6090, 24px 48px 0 #2980b9, 32px 48px 0 #2980b9, 40px 48px 0 #1e6090, 48px 48px 0 #2980b9,
+      16px 56px 0 #1a252f, 24px 56px 0 #1a252f, 32px 56px 0 #1a252f, 40px 56px 0 #1a252f,
+      16px 64px 0 #1a252f, 24px 64px 0 #1a252f, 32px 64px 0 #1a252f, 40px 64px 0 #1a252f;
+    filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+  }
+  .pixel-enderman {
+    width: 8px; height: 8px;
+    box-shadow:
+      16px 0 0 #0a0a0a, 24px 0 0 #0a0a0a, 32px 0 0 #0a0a0a, 40px 0 0 #0a0a0a,
+      16px 8px 0 #0a0a0a, 24px 8px 0 #0a0a0a, 32px 8px 0 #0a0a0a, 40px 8px 0 #0a0a0a,
+      16px 16px 0 #1a0a2a, 24px 16px 0 #1a0a2a, 32px 16px 0 #1a0a2a, 40px 16px 0 #1a0a2a,
+      16px 24px 0 #1a0a2a, 24px 24px 0 #c0392b, 32px 24px 0 #c0392b, 40px 24px 0 #1a0a2a,
+      16px 32px 0 #1a0a2a, 24px 32px 0 #1a0a2a, 32px 32px 0 #1a0a2a, 40px 32px 0 #1a0a2a,
+      24px 40px 0 #0a0a0a, 32px 40px 0 #0a0a0a,
+      24px 48px 0 #0a0a0a, 32px 48px 0 #0a0a0a,
+      24px 56px 0 #0a0a0a, 32px 56px 0 #0a0a0a,
+      24px 64px 0 #0a0a0a, 32px 64px 0 #0a0a0a,
+      24px 72px 0 #0a0a0a, 32px 72px 0 #0a0a0a;
+    filter: drop-shadow(0 0 12px rgba(192, 57, 43, 0.4));
+  }
+  .pixel-creeper {
+    width: 8px; height: 8px;
+    box-shadow:
+      8px 0 0 #2d5016, 16px 0 0 #2d5016, 24px 0 0 #2d5016, 32px 0 0 #2d5016, 40px 0 0 #2d5016, 48px 0 0 #2d5016,
+      8px 8px 0 #3d6b1e, 16px 8px 0 #2d5016, 24px 8px 0 #3d6b1e, 32px 8px 0 #3d6b1e, 40px 8px 0 #2d5016, 48px 8px 0 #3d6b1e,
+      8px 16px 0 #2d5016, 16px 16px 0 #0a0a0a, 24px 16px 0 #2d5016, 32px 16px 0 #2d5016, 40px 16px 0 #0a0a0a, 48px 16px 0 #2d5016,
+      8px 24px 0 #2d5016, 16px 24px 0 #0a0a0a, 24px 24px 0 #2d5016, 32px 24px 0 #2d5016, 40px 24px 0 #0a0a0a, 48px 24px 0 #2d5016,
+      8px 32px 0 #2d5016, 16px 32px 0 #2d5016, 24px 32px 0 #0a0a0a, 32px 32px 0 #0a0a0a, 40px 32px 0 #2d5016, 48px 32px 0 #2d5016,
+      8px 40px 0 #3d6b1e, 16px 40px 0 #2d5016, 24px 40px 0 #0a0a0a, 32px 40px 0 #0a0a0a, 40px 40px 0 #2d5016, 48px 40px 0 #3d6b1e,
+      16px 48px 0 #2d5016, 24px 48px 0 #0a0a0a, 32px 48px 0 #0a0a0a, 40px 48px 0 #2d5016,
+      16px 56px 0 #2d5016, 24px 56px 0 #2d5016, 32px 56px 0 #2d5016, 40px 56px 0 #2d5016,
+      8px 64px 0 #2d5016, 16px 64px 0 #2d5016, 24px 64px 0 #2d5016, 32px 64px 0 #2d5016, 40px 64px 0 #2d5016, 48px 64px 0 #2d5016,
+      8px 72px 0 #1a3009, 16px 72px 0 #2d5016, 24px 72px 0 #2d5016, 32px 72px 0 #2d5016, 40px 72px 0 #2d5016, 48px 72px 0 #1a3009;
   }
 
-  /* ============ BLOCKY DECORATION ============ */
-  .block-pattern {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr);
-    gap: 4px;
-    margin-top: 24px;
-    opacity: 0.4;
-  }
-
-  .block {
-    aspect-ratio: 1;
-    background: var(--farlands-green);
-    transition: all 0.3s;
-  }
-
-  .block:nth-child(odd) { background: #4a8030; }
-  .block:nth-child(3n) { background: #6fb848; }
-  .block:nth-child(5n) { background: var(--farlands-dirt); }
-
-  /* ============ PRIZES SECTION ============ */
-  .prizes-section {
-    background: linear-gradient(180deg, var(--farlands-bg) 0%, #0a1508 100%);
-    overflow: hidden;
-  }
-
+  /* ============ PRIZES ============ */
+  .prizes-section { background: #081406; }
   .prizes-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 32px;
+    gap: 24px;
     align-items: end;
   }
-
   .prize-card {
     position: relative;
-    padding: 48px 36px;
-    border: 2px solid var(--border-farlands);
-    background: rgba(255, 255, 255, 0.02);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 40px 28px;
+    border: 1.5px solid rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.015);
+    transition: all 0.4s;
   }
-
   .prize-card:hover {
-    transform: translateY(-10px);
-    border-color: var(--farlands-green);
+    transform: translateY(-6px);
+    border-color: rgba(106, 176, 76, 0.4);
   }
-
   .prize-card.winner {
-    border-color: var(--ancient-gold);
-    transform: scale(1.05);
-    background: linear-gradient(180deg, rgba(201, 146, 60, 0.08), transparent);
+    border-color: rgba(212, 168, 75, 0.5);
+    background: linear-gradient(180deg, rgba(212, 168, 75, 0.06), transparent);
+    transform: scale(1.03);
   }
-
   .prize-card.winner:hover {
     border-color: var(--ancient-gold);
-    box-shadow: 0 20px 60px rgba(201, 146, 60, 0.2);
+    box-shadow: 0 20px 50px rgba(212, 168, 75, 0.15);
   }
-
   .prize-rank {
     font-family: 'Syne', sans-serif;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--farlands-green);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
   }
-
   .prize-card.winner .prize-rank { color: var(--ancient-gold); }
-
   .prize-amount {
     font-family: 'Syne', sans-serif;
-    font-size: 56px;
+    font-size: 48px;
     font-weight: 800;
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     color: #fff;
   }
-
   .prize-card.winner .prize-amount {
     background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .prize-label {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
-    margin-bottom: 32px;
-    letter-spacing: 0.05em;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 24px;
+    letter-spacing: 0.03em;
   }
-
-  .prize-perks {
-    list-style: none;
-    border-top: 1px solid var(--border-farlands);
-    padding-top: 24px;
-  }
-
+  .prize-perks { list-style: none; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
   .prize-perks li {
-    padding: 10px 0;
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.7);
+    padding: 8px 0;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.6);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
   }
-
   .prize-perks li::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 5px; height: 5px;
     background: var(--farlands-green);
     flex-shrink: 0;
   }
-
-  .prize-card.winner .prize-perks li::before {
-    background: var(--ancient-gold);
-  }
+  .prize-card.winner .prize-perks li::before { background: var(--ancient-gold); }
 
   /* ============ TIMELINE ============ */
   .timeline-section {
-    background: #0a1508;
+    background: linear-gradient(180deg, #081406 0%, var(--farlands-bg) 100%);
   }
-
   .timeline {
     position: relative;
-    max-width: 900px;
+    max-width: 850px;
     margin: 0 auto;
   }
-
   .timeline::before {
     content: '';
     position: absolute;
     left: 50%;
-    top: 0;
-    bottom: 0;
+    top: 0; bottom: 0;
     width: 2px;
-    background: linear-gradient(180deg, var(--farlands-green), var(--ancient-gold));
+    background: linear-gradient(180deg, var(--ancient-gold), var(--farlands-green));
     transform: translateX(-50%);
   }
-
-  .timeline-item {
+  .tl-item {
     position: relative;
     display: flex;
-    margin-bottom: 60px;
+    margin-bottom: 48px;
   }
-
-  .timeline-item:nth-child(odd) { justify-content: flex-start; }
-  .timeline-item:nth-child(even) { justify-content: flex-end; }
-
-  .timeline-content {
-    width: 45%;
-    padding: 28px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-farlands);
+  .tl-item:nth-child(odd) { justify-content: flex-start; }
+  .tl-item:nth-child(even) { justify-content: flex-end; }
+  .tl-content {
+    width: 44%;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255,255,255,0.06);
     transition: all 0.3s;
   }
-
-  .timeline-content:hover {
-    border-color: var(--farlands-green);
-    background: rgba(93, 156, 58, 0.06);
+  .tl-content:hover {
+    border-color: rgba(106, 176, 76, 0.3);
+    background: rgba(106, 176, 76, 0.04);
   }
-
-  .timeline-dot {
+  .tl-dot {
     position: absolute;
     left: 50%;
-    top: 32px;
-    width: 16px;
-    height: 16px;
+    top: 28px;
+    width: 14px; height: 14px;
     background: var(--farlands-green);
     transform: translateX(-50%);
-    border: 3px solid #0a1508;
+    border: 3px solid #081406;
     z-index: 2;
   }
-
-  .timeline-date {
+  .tl-date {
     font-family: 'Syne', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.15em;
     color: var(--farlands-green);
     margin-bottom: 8px;
   }
-
-  .timeline-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 8px;
-  }
-
-  .timeline-desc {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.6;
-  }
-
-  /* ============ HOW TO JOIN ============ */
-  .join-section {
-    background: linear-gradient(180deg, #0a1508 0%, var(--farlands-bg) 100%);
-  }
-
-  .join-steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0;
-    counter-reset: step;
-  }
-
-  .join-step {
-    position: relative;
-    padding: 48px 32px;
-    border: 1px solid var(--border-farlands);
-    border-right: none;
-    counter-increment: step;
-    transition: all 0.4s;
-  }
-
-  .join-step:last-child { border-right: 1px solid var(--border-farlands); }
-
-  .join-step:hover {
-    background: rgba(93, 156, 58, 0.08);
-    z-index: 2;
-  }
-
-  .join-step::before {
-    content: counter(step, decimal-leading-zero);
-    font-family: 'Syne', sans-serif;
-    font-size: 64px;
-    font-weight: 800;
-    color: rgba(93, 156, 58, 0.15);
-    line-height: 1;
-    display: block;
-    margin-bottom: 16px;
-  }
-
-  .join-step h4 {
+  .tl-title {
     font-family: 'Syne', sans-serif;
     font-size: 18px;
     font-weight: 700;
     color: #fff;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
+  }
+  .tl-desc {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.6;
   }
 
+  /* ============ HOW TO JOIN ============ */
+  .join-section { background: var(--farlands-bg); }
+  .join-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    counter-reset: step;
+  }
+  .join-step {
+    position: relative;
+    padding: 40px 28px;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-right: none;
+    counter-increment: step;
+    transition: all 0.3s;
+  }
+  .join-step:last-child { border-right: 1px solid rgba(255,255,255,0.06); }
+  .join-step:hover {
+    background: rgba(106, 176, 76, 0.05);
+    z-index: 2;
+  }
+  .join-step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    color: rgba(106, 176, 76, 0.12);
+    line-height: 1;
+    display: block;
+    margin-bottom: 14px;
+  }
+  .join-step h4 {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
   .join-step p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.55);
     line-height: 1.7;
   }
 
-  /* ============ PREVIOUS EDITION ============ */
-  .previous-section {
+  /* ============ VISHVAKARMA RECAP ============ */
+  .vishva-section {
     background: var(--ancient-bg);
     position: relative;
     overflow: hidden;
   }
-
-  .previous-bg {
+  .vishva-bg {
     position: absolute;
     inset: 0;
     background-image: url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/528b3a31188342f5bf508b62e36e0a93.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298749&x-signature=r2VWuN1jAaLBj5Y8XTo4BBme9kg%3D');
     background-size: cover;
     background-position: center;
-    opacity: 0.15;
+    opacity: 0.12;
   }
-
-  .previous-content {
+  .vishva-grid {
     position: relative;
     z-index: 2;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 80px;
+    gap: 64px;
     align-items: center;
   }
-
-  .previous-title {
+  .vishva-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 4vw, 52px);
+    font-size: clamp(30px, 4vw, 48px);
     font-weight: 700;
     line-height: 1.1;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
-  .previous-desc {
-    font-size: 16px;
-    color: rgba(245, 240, 230, 0.7);
+  .vishva-desc {
+    font-size: 15px;
+    color: rgba(245, 240, 230, 0.65);
     line-height: 1.8;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
-
-  .previous-stats {
+  .vishva-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: 16px;
   }
-
-  .stat-item {
+  .stat {
     text-align: center;
-    padding: 24px 16px;
-    border: 1px solid var(--border-ancient);
+    padding: 20px 12px;
+    border: 1px solid rgba(201, 146, 60, 0.2);
   }
-
-  .stat-number {
+  .stat-num {
     font-family: 'Playfair Display', serif;
-    font-size: 42px;
+    font-size: 36px;
     font-weight: 700;
     color: var(--ancient-gold);
     line-height: 1;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
-
-  .stat-label {
-    font-size: 11px;
+  .stat-lbl {
+    font-size: 10px;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: rgba(245, 240, 230, 0.5);
+    color: rgba(245, 240, 230, 0.45);
   }
-
-  .previous-visual {
+  .vishva-visual {
     position: relative;
     aspect-ratio: 4/5;
-    border: 2px solid var(--border-ancient);
+    border: 2px solid rgba(201, 146, 60, 0.25);
     overflow: hidden;
   }
-
-  .previous-visual img {
-    width: 100%;
-    height: 100%;
+  .vishva-visual img {
+    width: 100%; height: 100%;
     object-fit: cover;
-    opacity: 0.8;
+    opacity: 0.85;
     transition: transform 0.6s;
   }
-
-  .previous-visual:hover img { transform: scale(1.05); }
-
-  .previous-visual-label {
+  .vishva-visual:hover img { transform: scale(1.05); }
+  .vishva-visual-label {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 24px;
-    background: linear-gradient(transparent, rgba(26, 20, 16, 0.95));
+    bottom: 0; left: 0; right: 0;
+    padding: 20px;
+    background: linear-gradient(transparent, rgba(18, 12, 8, 0.98));
     font-family: 'Playfair Display', serif;
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 600;
     font-style: italic;
     color: var(--ancient-gold);
   }
 
-  /* ============ CTA SECTION ============ */
+  /* ============ CTA ============ */
   .cta-section {
     background: var(--farlands-bg);
-    padding: 160px 80px;
+    padding: 140px 64px;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
-
   .cta-section::before {
     content: '';
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px;
-    height: 800px;
-    background: radial-gradient(circle, rgba(93, 156, 58, 0.15), transparent 70%);
+    width: 700px; height: 700px;
+    background: radial-gradient(circle, rgba(106, 176, 76, 0.12), transparent 70%);
     pointer-events: none;
   }
-
-  .cta-content {
+  .cta-inner {
     position: relative;
     z-index: 2;
-    max-width: 700px;
+    max-width: 640px;
     margin: 0 auto;
   }
-
   .cta-eyebrow {
     font-family: 'Syne', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     letter-spacing: 0.3em;
     text-transform: uppercase;
     color: var(--farlands-green);
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     font-weight: 700;
   }
-
   .cta-title {
     font-family: 'Syne', sans-serif;
-    font-size: clamp(40px, 6vw, 72px);
+    font-size: clamp(36px, 5.5vw, 64px);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     color: #fff;
   }
-
   .cta-title em {
     font-style: normal;
-    background: linear-gradient(90deg, #a8e063, #56ab2f);
+    background: linear-gradient(90deg, #a8e063, #4a9c28);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-
   .cta-desc {
-    font-size: 18px;
-    color: rgba(255, 255, 255, 0.65);
-    margin-bottom: 48px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 40px;
     line-height: 1.7;
   }
 
   /* ============ FOOTER ============ */
   .footer {
-    background: #061005;
-    padding: 60px 80px 40px;
-    border-top: 1px solid var(--border-farlands);
+    background: #050d04;
+    padding: 56px 64px 32px;
+    border-top: 1px solid rgba(255,255,255,0.05);
   }
-
   .footer-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 48px;
+    margin-bottom: 40px;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 32px;
   }
-
-  .footer-brand {
-    max-width: 300px;
-  }
-
+  .footer-brand { max-width: 280px; }
   .footer-logo {
     font-family: 'Syne', sans-serif;
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     color: #fff;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
   }
-
   .footer-tagline {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.4);
     line-height: 1.6;
   }
-
-  .footer-links {
-    display: flex;
-    gap: 60px;
-    flex-wrap: wrap;
-  }
-
+  .footer-links { display: flex; gap: 56px; flex-wrap: wrap; }
   .footer-col h5 {
     font-family: 'Syne', sans-serif;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--farlands-green);
-    margin-bottom: 16px;
+    margin-bottom: 14px;
   }
-
-  .footer-col ul {
-    list-style: none;
-  }
-
-  .footer-col li {
-    margin-bottom: 10px;
-  }
-
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 8px; }
   .footer-col a {
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.5);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13px;
     transition: color 0.3s;
   }
-
   .footer-col a:hover { color: #fff; }
-
   .footer-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 32px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.05);
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
   }
-
   .footer-copy {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.35);
   }
-
   .footer-credit {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.35);
     font-family: 'Playfair Display', serif;
     font-style: italic;
   }
 
-  /* ============ REVEAL ANIMATIONS ============ */
+  /* ============ REVEAL ============ */
   .reveal {
     opacity: 0;
-    transform: translateY(40px);
-    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(30px);
+    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 1024px) {
-    .nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    .section { padding: 100px 40px; }
+    .section { padding: 96px 40px; }
     .farlands-content { padding: 100px 40px; }
-    .theme-card:nth-child(n) { grid-column: span 6; }
-    .prizes-grid { grid-template-columns: 1fr; gap: 24px; }
+    .nav-links { display: none; }
+    .nav-mobile-toggle { display: flex; }
+    .track-card.t1, .track-card.t2, .track-card.t3,
+    .track-card.t4, .track-card.t5 { grid-column: span 6; }
+    .prizes-grid { grid-template-columns: 1fr; gap: 20px; }
     .prize-card.winner { transform: none; }
+    .mobs-row { grid-template-columns: repeat(2, 1fr); }
     .join-steps { grid-template-columns: repeat(2, 1fr); }
-    .previous-content { grid-template-columns: 1fr; gap: 48px; }
-    .cta-section { padding: 120px 40px; }
-    .footer { padding: 48px 40px 32px; }
+    .join-step:nth-child(2) { border-right: 1px solid rgba(255,255,255,0.06); }
+    .join-step:nth-child(3) { border-right: none; border-top: none; }
+    .vishva-grid { grid-template-columns: 1fr; gap: 40px; }
+    .cta-section { padding: 100px 40px; }
+    .footer { padding: 48px 40px 28px; }
   }
 
   @media (max-width: 640px) {
-    .section { padding: 80px 24px; }
+    .nav { padding: 14px 20px; }
+    .nav.scrolled { padding: 12px 20px; }
+    .nav-logo { font-size: 15px; }
+    .nav-cta { padding: 8px 16px; font-size: 10px; }
+    .section { padding: 72px 24px; }
     .farlands-content { padding: 80px 24px; }
-    .theme-card:nth-child(n) { grid-column: span 12; }
-    .timeline::before { left: 20px; }
-    .timeline-item:nth-child(n) { justify-content: flex-end; }
-    .timeline-content { width: calc(100% - 50px); }
-    .timeline-dot { left: 20px; }
-    .join-steps { grid-template-columns: 1fr; }
-    .join-step { border-right: 1px solid var(--border-farlands); border-bottom: none; }
-    .join-step:last-child { border-bottom: 1px solid var(--border-farlands); }
-    .previous-stats { grid-template-columns: 1fr; }
     .farlands-meta { gap: 24px; }
     .btn-secondary { margin-left: 0; margin-top: 12px; }
-    .cta-section { padding: 100px 24px; }
-    .footer { padding: 40px 24px 28px; }
+    .track-card.t1, .track-card.t2, .track-card.t3,
+    .track-card.t4, .track-card.t5 { grid-column: span 12; }
+    .mobs-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .timeline::before { left: 16px; }
+    .tl-item:nth-child(n) { justify-content: flex-end; }
+    .tl-content { width: calc(100% - 40px); }
+    .tl-dot { left: 16px; }
+    .join-steps { grid-template-columns: 1fr; }
+    .join-step { border-right: 1px solid rgba(255,255,255,0.06); border-bottom: none; }
+    .join-step:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .vishva-stats { grid-template-columns: 1fr; gap: 12px; }
+    .cta-section { padding: 80px 24px; }
+    .footer { padding: 40px 24px 24px; }
     .footer-links { gap: 32px; }
+    .journey-chapter .chapter-title { font-size: 28px; }
   }
 </style>
 </head>
 <body>
 
-<!-- NAVIGATION -->
-<nav class="nav">
-  <div class="nav-logo">VISHVAKARMA <span>→</span> FARLANDS</div>
+<!-- LOADER -->
+<div class="loader" id="loader">
+  <div class="loader-arrow"></div>
+  <div class="loader-text">Preparing the Journey</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-logo">VISHVAKARMA<span class="arrow">→</span><span>FARLANDS</span></div>
   <ul class="nav-links">
-    <li><a href="#theme">Theme</a></li>
+    <li><a href="#tracks">Tracks</a></li>
     <li><a href="#prizes">Prizes</a></li>
     <li><a href="#timeline">Timeline</a></li>
     <li><a href="#join">Join</a></li>
   </ul>
   <a href="#cta" class="nav-cta">Register</a>
+  <button class="nav-mobile-toggle" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
 </nav>
 
-<!-- HERO — ANCIENT VISHVAKARMA ERA -->
-<section class="hero-ancient" id="hero">
-  <div class="hero-ancient-bg" id="ancientBg"></div>
-  <div class="hero-ancient-overlay"></div>
-  <div class="hero-ancient-grain"></div>
-
-  <div class="hero-content">
-    <p class="hero-eyebrow">Hackathon 2026 · Edition 02</p>
-    <h1 class="hero-title">Vishvakarma</h1>
-    <p class="hero-subtitle">The divine architect of worlds</p>
-    <p class="hero-desc">
-      From the sacred forge of ancient creation, where gods and mortals alike 
-      marveled at the craft of Vishvakarma — we now journey beyond the known 
-      world, into lands uncharted and blocks unplaced.
-    </p>
-  </div>
-
-  <div class="scroll-indicator">
-    <span>Scroll to Journey</span>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- CINEMATIC TRANSITION -->
-<section class="transition-section" id="transition">
-  <div class="transition-sticky">
-    <canvas class="transition-canvas" id="transitionCanvas"></canvas>
-    <div class="transition-overlay">
-      <div class="transition-text" id="transitionText">
-        From the Divine Forge<br>to the Blocky Frontier
+<!-- CINEMATIC JOURNEY -->
+<section class="journey" id="journey">
+  <div class="journey-sticky">
+    <canvas id="journeyCanvas"></canvas>
+    <div class="journey-overlay">
+      <div class="journey-chapter chapter-ancient" id="chap1">
+        <p class="chapter-label">Chapter I · The Divine Forge</p>
+        <h2 class="chapter-title">Vishvakarma</h2>
+        <p class="chapter-sub">Where every creation begins</p>
       </div>
+      <div class="journey-chapter chapter-journey" id="chap2">
+        <p class="chapter-label">Chapter II · The Arrow's Flight</p>
+        <h2 class="chapter-title">From the Divine Forge<br>to the Blocky Frontier</h2>
+      </div>
+      <div class="journey-chapter chapter-farlands" id="chap3">
+        <p class="chapter-label">Chapter III · Welcome</p>
+        <h2 class="chapter-title">THE FARLANDS</h2>
+        <p class="chapter-sub">Infinite blocks. Infinite possibilities.</p>
+      </div>
+    </div>
+    <div class="scroll-hint" id="scrollHint">
+      <span>Scroll to Begin</span>
+      <div class="scroll-hint-line"></div>
     </div>
   </div>
 </section>
@@ -1155,99 +1145,129 @@
 <section class="farlands-hero" id="farlands">
   <div class="farlands-bg"></div>
   <div class="farlands-overlay"></div>
-
   <div class="farlands-content">
-    <p class="farlands-eyebrow">Welcome to the Farlands</p>
+    <p class="farlands-eyebrow">Hackathon 2026 · Edition 02</p>
     <h1 class="farlands-title">
-      <span class="line1">Build the</span>
-      <span class="line2">Impossible</span>
+      <span class="l1">Build the</span>
+      <span class="l2">Impossible</span>
     </h1>
     <p class="farlands-tagline">
       A 48-hour hackathon where creativity meets code. Mine ideas, craft solutions, 
-      and forge innovations that reshape the digital landscape. The Farlands await.
+      and forge innovations in the infinite world of the Farlands.
     </p>
-
     <div class="farlands-meta">
       <div class="meta-item">
         <span class="meta-label">Date</span>
-        <span class="meta-value">Nov 15–17</span>
+        <span class="meta-value">Dec 13–15</span>
       </div>
       <div class="meta-item">
         <span class="meta-label">Duration</span>
         <span class="meta-value">48 Hours</span>
       </div>
       <div class="meta-item">
+        <span class="meta-label">Teams</span>
+        <span class="meta-value">2–4 Devs</span>
+      </div>
+      <div class="meta-item">
         <span class="meta-label">Mode</span>
         <span class="meta-value">Hybrid</span>
       </div>
     </div>
-
     <div>
       <a href="#cta" class="btn-primary">Register Now →</a>
-      <a href="#theme" class="btn-secondary">Learn More</a>
+      <a href="#tracks" class="btn-secondary">Explore Tracks</a>
     </div>
   </div>
 </section>
 
-<!-- THEME & TRACKS -->
-<section class="section theme-section" id="theme">
-  <div class="section-header reveal">
-    <p class="section-number">01 / Theme</p>
-    <h2 class="section-title" style="color:#fff">Five Tracks.<br>One Infinite World.</h2>
+<!-- TRACKS -->
+<section class="section tracks-section" id="tracks">
+  <div class="section-head reveal">
+    <p class="section-num">01 / Choose Your Path</p>
+    <h2 class="section-title">Five Tracks.<br>One Infinite World.</h2>
     <p class="section-desc">
-      Choose your path through the Farlands. Each track represents a unique 
-      dimension of innovation, waiting for builders like you to leave your mark.
+      Each track is a unique dimension of the Farlands, waiting for builders like you 
+      to leave your mark. Pick your quest and craft something extraordinary.
     </p>
   </div>
-
-  <div class="theme-grid">
-    <div class="theme-card reveal">
-      <div class="theme-icon">
+  <div class="tracks-grid">
+    <div class="track-card t1 reveal">
+      <div class="track-icon">
         <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
       </div>
       <h3>AI & Machine Learning</h3>
-      <p>Train intelligent systems that learn, adapt, and evolve. Build the neural pathways of tomorrow's digital minds.</p>
-      <div class="block-pattern">
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-      </div>
+      <p>Train intelligent systems that learn, adapt, and evolve. Build neural pathways for tomorrow's digital minds. From LLMs to computer vision.</p>
+      <div class="mini-blocks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
     </div>
-
-    <div class="theme-card reveal">
-      <div class="theme-icon">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    <div class="track-card t2 reveal">
+      <div class="track-icon">
+        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
       </div>
       <h3>Web3 & Blockchain</h3>
-      <p>Forge decentralized systems and smart contracts. Mine new possibilities in the crypto landscape.</p>
+      <p>Forge decentralized systems, smart contracts, and token economies. Mine new possibilities in the crypto frontier.</p>
     </div>
-
-    <div class="theme-card reveal">
-      <div class="theme-icon">
+    <div class="track-card t3 reveal">
+      <div class="track-icon">
         <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
       </div>
-      <h3>AR/VR</h3>
-      <p>Build immersive worlds beyond the screen.</p>
+      <h3>AR / VR / XR</h3>
+      <p>Build immersive worlds beyond the screen. Blend reality with imagination.</p>
     </div>
-
-    <div class="theme-card reveal">
-      <div class="theme-icon">
-        <svg viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+    <div class="track-card t4 reveal">
+      <div class="track-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
       </div>
-      <h3>Sustainability & Climate</h3>
-      <p>Craft solutions for a greener world. Build technologies that heal and protect our planet.</p>
+      <h3>Climate & Sustainability</h3>
+      <p>Craft solutions for a greener world. Build tech that heals and protects our planet.</p>
     </div>
-
-    <div class="theme-card reveal">
-      <div class="theme-icon">
+    <div class="track-card t5 reveal">
+      <div class="track-icon">
         <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
       </div>
       <h3>Open Innovation — Free Track</h3>
-      <p>No boundaries, no limits. Build anything that defies expectations. The most creative solutions come from the wildest ideas. Surprise us.</p>
-      <div class="block-pattern">
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
-        <div class="block"></div><div class="block"></div><div class="block"></div><div class="block"></div>
+      <p>No boundaries. No limits. Build anything that defies expectations. The most creative solutions come from the wildest ideas. Surprise us with your vision — whether it's a tool, a game, an experience, or something no one has ever seen before. This is your canvas.</p>
+      <div class="mini-blocks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="section mobs-section">
+  <div class="section-head reveal">
+    <p class="section-num">02 / The Inhabitants</p>
+    <h2 class="section-title">Legends of the<br>Farlands.</h2>
+    <p class="section-desc">
+      You won't be building alone. The Farlands are home to iconic characters 
+      — some friendly, some mysterious, some best avoided after dark.
+    </p>
+  </div>
+  <div class="mobs-row">
+    <div class="mob-card reveal">
+      <div class="mob-art"><div class="pixel-steve"></div></div>
+      <div class="mob-info">
+        <div class="mob-name">Steve</div>
+        <div class="mob-role">The Builder · Your Spirit Guide</div>
+      </div>
+    </div>
+    <div class="mob-card reveal">
+      <div class="mob-art"><div class="pixel-herobrine"></div></div>
+      <div class="mob-info">
+        <div class="mob-name">Herobrine</div>
+        <div class="mob-role">The Myth · Watcher of Worlds</div>
+      </div>
+    </div>
+    <div class="mob-card reveal">
+      <div class="mob-art"><div class="pixel-enderman"></div></div>
+      <div class="mob-info">
+        <div class="mob-name">Enderman</div>
+        <div class="mob-role">The Silent · Teleports Ideas</div>
+      </div>
+    </div>
+    <div class="mob-card reveal">
+      <div class="mob-art"><div class="pixel-creeper"></div></div>
+      <div class="mob-info">
+        <div class="mob-name">Creeper</div>
+        <div class="mob-role">SSSSsss... · Don't Look Away</div>
       </div>
     </div>
   </div>
@@ -1255,49 +1275,46 @@
 
 <!-- PRIZES -->
 <section class="section prizes-section" id="prizes">
-  <div class="section-header reveal">
-    <p class="section-number">02 / Rewards</p>
-    <h2 class="section-title" style="color:#fff">Claim Your<br>Treasure.</h2>
+  <div class="section-head reveal">
+    <p class="section-num">03 / Treasure</p>
+    <h2 class="section-title">Claim Your<br>Reward.</h2>
     <p class="section-desc">
       The rarest blocks carry the greatest value. Compete for prizes that recognize 
-      not just victory, but craftsmanship, innovation, and daring.
+      craftsmanship, innovation, and daring.
     </p>
   </div>
-
   <div class="prizes-grid">
     <div class="prize-card reveal">
       <p class="prize-rank">Second Place</p>
       <div class="prize-amount">₹75K</div>
-      <p class="prize-label">Cash Prize</p>
+      <p class="prize-label">Cash Prize + Perks</p>
       <ul class="prize-perks">
-        <li>Mentorship sessions</li>
-        <li>Incubation support</li>
-        <li>Premium tool licenses</li>
-        <li>Feature in showcase</li>
+        <li>Mentorship from industry experts</li>
+        <li>Incubation program support</li>
+        <li>Cloud credits worth ₹25K</li>
+        <li>Premium tool subscriptions</li>
       </ul>
     </div>
-
     <div class="prize-card winner reveal">
       <p class="prize-rank">★ Grand Champion</p>
       <div class="prize-amount">₹150K</div>
-      <p class="prize-label">Cash Prize + Perks</p>
+      <p class="prize-label">Cash Prize + Full Perks</p>
       <ul class="prize-perks">
         <li>Direct incubation opportunity</li>
-        <li>Executive mentorship program</li>
+        <li>Executive 1-on-1 mentorship</li>
         <li>Cloud credits worth ₹50K</li>
-        <li>Exclusive networking access</li>
-        <li>Feature in annual report</li>
+        <li>Exclusive investor networking</li>
+        <li>Feature in annual showcase</li>
       </ul>
     </div>
-
     <div class="prize-card reveal">
       <p class="prize-rank">Third Place</p>
       <div class="prize-amount">₹40K</div>
-      <p class="prize-label">Cash Prize</p>
+      <p class="prize-label">Cash Prize + Perks</p>
       <ul class="prize-perks">
-        <li>Career guidance</li>
-        <li>Tool subscriptions</li>
-        <li>Community spotlight</li>
+        <li>Career guidance sessions</li>
+        <li>Developer tool subscriptions</li>
+        <li>Community spotlight feature</li>
         <li>Certificate of excellence</li>
       </ul>
     </div>
@@ -1306,91 +1323,84 @@
 
 <!-- TIMELINE -->
 <section class="section timeline-section" id="timeline">
-  <div class="section-header reveal" style="text-align:center;max-width:100%;">
-    <p class="section-number">03 / Schedule</p>
-    <h2 class="section-title" style="color:#fff">The Journey Ahead</h2>
+  <div class="section-head reveal" style="text-align:center;max-width:100%;">
+    <p class="section-num">04 / Schedule</p>
+    <h2 class="section-title">The Road Ahead</h2>
   </div>
-
   <div class="timeline">
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 01, 2026</p>
-        <h4 class="timeline-title">Registrations Open</h4>
-        <p class="timeline-desc">Form your teams of 2-4 members and register your place in the Farlands.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Nov 20, 2026</p>
+        <h4 class="tl-title">Registrations Open</h4>
+        <p class="tl-desc">Form your teams of 2-4 members. Register and claim your spot in the Farlands.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 10, 2026</p>
-        <h4 class="timeline-title">Registration Closes</h4>
-        <p class="timeline-desc">Last chance to enter. Teams confirmed and participant kits dispatched.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Dec 06, 2026</p>
+        <h4 class="tl-title">Registration Closes</h4>
+        <p class="tl-desc">Final call for entries. Teams confirmed and participant kits dispatched.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 14, 2026</p>
-        <h4 class="timeline-title">Pre-Hack Briefing</h4>
-        <p class="timeline-desc">Opening ceremony, sponsor showcases, and team ice-breaking sessions.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Dec 12, 2026 · 6:00 PM</p>
+        <h4 class="tl-title">Pre-Hack Briefing</h4>
+        <p class="tl-desc">Opening ceremony, sponsor showcases, team ice-breaking, and rule briefing.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 15, 2026 · 9:00 AM</p>
-        <h4 class="timeline-title">Hackathon Begins</h4>
-        <p class="timeline-desc">Theme revealed. Coding commences. The 48-hour countdown begins.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Dec 13, 2026 · 9:00 AM</p>
+        <h4 class="tl-title">Hackathon Begins</h4>
+        <p class="tl-desc">Theme revealed. Coding commences. The 48-hour countdown begins.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 17, 2026 · 9:00 AM</p>
-        <h4 class="timeline-title">Submissions Due</h4>
-        <p class="timeline-desc">Final commits pushed. Presentations prepared. Judging begins.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Dec 15, 2026 · 9:00 AM</p>
+        <h4 class="tl-title">Submissions Due</h4>
+        <p class="tl-desc">Final commits pushed. Presentations prepared. Judging begins.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
-
-    <div class="timeline-item reveal">
-      <div class="timeline-content">
-        <p class="timeline-date">Nov 17, 2026 · 6:00 PM</p>
-        <h4 class="timeline-title">Awards Ceremony</h4>
-        <p class="timeline-desc">Winners announced. Prizes awarded. Legends born in the Farlands.</p>
+    <div class="tl-item reveal">
+      <div class="tl-content">
+        <p class="tl-date">Dec 15, 2026 · 5:00 PM</p>
+        <h4 class="tl-title">Awards Ceremony</h4>
+        <p class="tl-desc">Winners announced. Prizes awarded. Legends born in the Farlands.</p>
       </div>
-      <div class="timeline-dot"></div>
+      <div class="tl-dot"></div>
     </div>
   </div>
 </section>
 
 <!-- HOW TO JOIN -->
 <section class="section join-section" id="join">
-  <div class="section-header reveal">
-    <p class="section-number">04 / How to Join</p>
-    <h2 class="section-title" style="color:#fff">Enter the Portal.</h2>
+  <div class="section-head reveal">
+    <p class="section-num">05 / How to Join</p>
+    <h2 class="section-title">Enter the Portal.</h2>
     <p class="section-desc">
-      Four simple steps from the mortal realm to the Farlands. Gather your party 
+      Four steps from the mortal realm to the Farlands. Gather your party 
       and prepare for the adventure.
     </p>
   </div>
-
   <div class="join-steps">
     <div class="join-step reveal">
       <h4>Form Your Team</h4>
-      <p>Gather 2-4 skilled builders. Diversity of craft strengthens any party.</p>
+      <p>Gather 2-4 skilled builders. Diversity of craft strengthens any party in the Farlands.</p>
     </div>
     <div class="join-step reveal">
       <h4>Register Online</h4>
-      <p>Complete the registration form with your team details and chosen track.</p>
+      <p>Complete the registration form with your team details and track preference.</p>
     </div>
     <div class="join-step reveal">
       <h4>Attend Briefing</h4>
-      <p>Join the pre-hack session to understand rules, meet mentors, and scout the competition.</p>
+      <p>Join the pre-hack session. Understand rules, meet mentors, scout the competition.</p>
     </div>
     <div class="join-step reveal">
       <h4>Build & Conquer</h4>
@@ -1399,51 +1409,51 @@
   </div>
 </section>
 
-<!-- PREVIOUS EDITION -->
-<section class="section previous-section" id="previous">
-  <div class="previous-bg"></div>
-  <div class="previous-content">
+<!-- VISHVAKARMA RECAP -->
+<section class="section vishva-section" id="previous">
+  <div class="vishva-bg"></div>
+  <div class="vishva-grid">
     <div class="reveal">
-      <p class="hero-eyebrow" style="margin-bottom:20px;">Previous Edition · 2025</p>
-      <h2 class="previous-title">Where It All Began</h2>
-      <p class="previous-desc">
+      <p class="hero-eyebrow" style="margin-bottom:16px;color:var(--ancient-gold);font-family:'Source Sans 3',sans-serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;font-weight:600;">Previous Edition · 2025</p>
+      <h2 class="vishva-title">Where It All Began</h2>
+      <p class="vishva-desc">
         The inaugural edition, Vishvakarma, brought together 500+ builders across 
         India to craft solutions in the spirit of the divine architect. Teams 
-        forged innovations that blended ancient wisdom with modern technology.
+        forged innovations that blended ancient wisdom with modern technology, 
+        creating projects that continue to inspire.
       </p>
-      <div class="previous-stats">
-        <div class="stat-item">
-          <div class="stat-number">500+</div>
-          <div class="stat-label">Participants</div>
+      <div class="vishva-stats">
+        <div class="stat">
+          <div class="stat-num">500+</div>
+          <div class="stat-lbl">Participants</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-number">120</div>
-          <div class="stat-label">Teams</div>
+        <div class="stat">
+          <div class="stat-num">120</div>
+          <div class="stat-lbl">Teams</div>
         </div>
-        <div class="stat-item">
-          <div class="stat-number">48</div>
-          <div class="stat-label">Projects</div>
+        <div class="stat">
+          <div class="stat-num">48</div>
+          <div class="stat-lbl">Projects</div>
         </div>
       </div>
     </div>
-
-    <div class="previous-visual reveal">
+    <div class="vishva-visual reveal">
       <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/528b3a31188342f5bf508b62e36e0a93.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298749&x-signature=r2VWuN1jAaLBj5Y8XTo4BBme9kg%3D" alt="Vishvakarma 2025">
-      <div class="previous-visual-label">Vishvakarma · Edition 01</div>
+      <div class="vishva-visual-label">Vishvakarma · Edition 01</div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta-section" id="cta">
-  <div class="cta-content reveal">
+  <div class="cta-inner reveal">
     <p class="cta-eyebrow">Ready to Build?</p>
     <h2 class="cta-title">Your Journey to<br>the <em>Farlands</em><br>Begins Now.</h2>
     <p class="cta-desc">
       Don't just watch the world change — be the one who builds the change. 
       Register your team and claim your place in the next chapter of innovation.
     </p>
-    <a href="#" class="btn-primary" style="font-size:15px;padding:20px 48px;">Register for Farlands →</a>
+    <a href="#" class="btn-primary" style="font-size:14px;padding:16px 40px;">Register for Farlands →</a>
   </div>
 </section>
 
@@ -1452,14 +1462,13 @@
   <div class="footer-top">
     <div class="footer-brand">
       <div class="footer-logo">FARLANDS</div>
-      <p class="footer-tagline">A hackathon journey from the divine forge of Vishvakarma to the infinite blocks of the Farlands.</p>
+      <p class="footer-tagline">From Vishvakarma's divine forge to the infinite blocks of the Farlands. A hackathon journey.</p>
     </div>
-
     <div class="footer-links">
       <div class="footer-col">
         <h5>Event</h5>
         <ul>
-          <li><a href="#theme">Theme & Tracks</a></li>
+          <li><a href="#tracks">Tracks</a></li>
           <li><a href="#prizes">Prizes</a></li>
           <li><a href="#timeline">Schedule</a></li>
           <li><a href="#join">How to Join</a></li>
@@ -1485,7 +1494,6 @@
       </div>
     </div>
   </div>
-
   <div class="footer-bottom">
     <p class="footer-copy">© 2026 Farlands Hackathon. All rights reserved.</p>
     <p class="footer-credit">From Vishvakarma's forge to the Farlands' frontier — built with passion.</p>
@@ -1496,205 +1504,486 @@
 (function() {
   'use strict';
 
-  // ============ PARALLAX ON ANCIENT HERO ============
-  var ancientBg = document.getElementById('ancientBg');
+  // ============ LOADER ============
+  window.addEventListener('load', function() {
+    setTimeout(function() {
+      document.getElementById('loader').classList.add('hidden');
+    }, 600);
+  });
+
+  // ============ NAV ============
+  var nav = document.getElementById('nav');
+  var navFarlands = false;
   window.addEventListener('scroll', function() {
-    var scrollY = window.scrollY;
-    if (ancientBg && scrollY < window.innerHeight) {
-      ancientBg.style.transform = 'scale(1.1) translateY(' + (scrollY * 0.3) + 'px)';
+    if (window.scrollY > 80) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+
+    var farlands = document.getElementById('farlands');
+    if (farlands) {
+      var rect = farlands.getBoundingClientRect();
+      var shouldSwitch = rect.top < window.innerHeight * 0.5;
+      if (shouldSwitch !== navFarlands) {
+        navFarlands = shouldSwitch;
+        nav.classList.toggle('nav-farlands', shouldSwitch);
+      }
     }
   });
+
+  // ============ CINEMATIC JOURNEY CANVAS ============
+  var canvas = document.getElementById('journeyCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var journey = document.getElementById('journey');
+  var chap1 = document.getElementById('chap1');
+  var chap2 = document.getElementById('chap2');
+  var chap3 = document.getElementById('chap3');
+  var scrollHint = document.getElementById('scrollHint');
+
+  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var progress = 0;
+  var isMobile = window.innerWidth < 768;
+  var PARTICLE_COUNT = isMobile ? 800 : 1800;
+  var particles = [];
+
+  function resize() {
+    W = canvas.offsetWidth = canvas.parentElement.offsetWidth;
+    H = canvas.offsetHeight = canvas.parentElement.offsetHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    isMobile = W < 768;
+  }
+
+  function initParticles() {
+    particles = [];
+    for (var i = 0; i < PARTICLE_COUNT; i++) {
+      particles.push({
+        x: Math.random(),
+        y: Math.random(),
+        size: 3 + Math.random() * 5,
+        delay: Math.random() * 0.5,
+        speed: 0.5 + Math.random() * 0.8,
+        drift: (Math.random() - 0.5) * 0.3,
+        seed: Math.random()
+      });
+    }
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInOut(t) { return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; }
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
+
+  function drawScene(p) {
+    ctx.clearRect(0, 0, W, H);
+
+    // === PHASE 1: Ancient Temple (0 - 0.3) ===
+    if (p < 0.3) {
+      var t = p / 0.3;
+      var eT = easeInOut(t);
+
+      var bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, lerpColor('#1a0f08', '#2a1a0e', eT));
+      bg.addColorStop(0.6, lerpColor('#0a0604', '#1a0f08', eT));
+      bg.addColorStop(1, '#050302');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      drawPillars(eT);
+
+      // Light rays
+      ctx.save();
+      ctx.globalAlpha = 0.15 * eT;
+      for (var r = 0; r < 5; r++) {
+        var rayGrad = ctx.createLinearGradient(W * (0.2 + r * 0.15), 0, W * (0.25 + r * 0.15), H);
+        rayGrad.addColorStop(0, '#d4a84b');
+        rayGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = rayGrad;
+        ctx.beginPath();
+        ctx.moveTo(W * (0.18 + r * 0.15), 0);
+        ctx.lineTo(W * (0.28 + r * 0.15), 0);
+        ctx.lineTo(W * (0.35 + r * 0.15), H);
+        ctx.lineTo(W * (0.1 + r * 0.15), H);
+        ctx.closePath();
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Dust particles
+      ctx.save();
+      for (var i = 0; i < particles.length; i++) {
+        var pt = particles[i];
+        var px = pt.x * W + Math.sin(p * 8 + pt.seed * 10) * 20;
+        var py = pt.y * H + Math.cos(p * 6 + pt.seed * 8) * 15;
+        ctx.globalAlpha = 0.3 * eT;
+        ctx.fillStyle = '#d4a84b';
+        ctx.fillRect(px, py, pt.size * 0.6, pt.size * 0.6);
+      }
+      ctx.restore();
+
+      // Bow forming
+      if (t > 0.3) {
+        var bowT = (t - 0.3) / 0.7;
+        drawBow(bowT);
+      }
+
+      showChapter(chap1, Math.min(1, t * 1.5));
+      showChapter(chap2, 0);
+      showChapter(chap3, 0);
+      if (scrollHint) scrollHint.style.opacity = 1 - t * 0.8;
+    }
+
+    // === PHASE 2: Arrow Flight (0.3 - 0.65) ===
+    else if (p < 0.65) {
+      var t = (p - 0.3) / 0.35;
+      var eT = easeInOut(t);
+
+      var bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, lerpColor('#2a1a0e', '#5a8fa8', eT));
+      bg.addColorStop(0.5, lerpColor('#1a0f08', '#7ec8e3', eT));
+      bg.addColorStop(1, lerpColor('#0a0604', '#4a9c28', eT * 0.5));
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      drawTerrain(eT);
+
+      // Transformation particles
+      for (var i = 0; i < particles.length; i++) {
+        var pt = particles[i];
+        var localT = Math.max(0, Math.min(1, (t - pt.delay) / (1 - pt.delay) * pt.speed));
+        var startX = pt.x * W * 0.6;
+        var endX = W * 0.3 + pt.x * W * 0.7;
+        var px = lerp(startX, endX, easeOut(localT));
+        var py = pt.y * H + Math.sin(localT * Math.PI * 2 + pt.seed * 10) * 30 * (1 - localT);
+        var col = lerpColorObj({r:212,g:168,b:75}, {r:106,g:176,b:76}, localT);
+        ctx.globalAlpha = 0.5 + localT * 0.4;
+        ctx.fillStyle = 'rgb(' + col.r + ',' + col.g + ',' + col.b + ')';
+        var bSize = pt.size * (0.5 + localT * 1.5);
+        ctx.fillRect(px, py, bSize, bSize);
+        if (localT > 0.5) {
+          ctx.globalAlpha = 0.15;
+          ctx.fillStyle = '#fff';
+          ctx.fillRect(px, py, bSize, bSize * 0.25);
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      drawArrow(eT);
+
+      if (t > 0.1) {
+        ctx.save();
+        var arrowY = H * 0.5 + Math.sin(eT * Math.PI) * H * 0.08;
+        var trailGrad = ctx.createLinearGradient(W * 0.1, arrowY, W * 0.5, arrowY);
+        trailGrad.addColorStop(0, 'transparent');
+        trailGrad.addColorStop(1, 'rgba(212, 168, 75, 0.15)');
+        ctx.fillStyle = trailGrad;
+        ctx.fillRect(W * 0.05, arrowY - 2, W * 0.4, 4);
+        ctx.restore();
+      }
+
+      showChapter(chap1, Math.max(0, 1 - t * 2));
+      showChapter(chap2, Math.min(1, t * 2) * Math.max(0, 1 - (t - 0.5) * 2));
+      showChapter(chap3, Math.max(0, (t - 0.7) * 3.3));
+      if (scrollHint) scrollHint.style.opacity = 0;
+    }
+
+    // === PHASE 3: Portal Breakthrough (0.65 - 0.85) ===
+    else if (p < 0.85) {
+      var t = (p - 0.65) / 0.2;
+      var eT = easeInOut(t);
+
+      var bg = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, W * 0.7);
+      var burst = Math.min(1, t * 2);
+      bg.addColorStop(0, 'rgba(255, 250, 220, ' + (0.9 * burst) + ')');
+      bg.addColorStop(0.3, 'rgba(168, 224, 99, ' + (0.5 * burst) + ')');
+      bg.addColorStop(1, '#0a1808');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Portal rings
+      ctx.save();
+      for (var ring = 0; ring < 5; ring++) {
+        var ringT = Math.max(0, Math.min(1, t * 2 - ring * 0.15));
+        if (ringT <= 0) continue;
+        var ringR = W * 0.1 + ringT * W * (0.25 + ring * 0.08);
+        ctx.globalAlpha = (1 - ringT) * 0.4;
+        ctx.strokeStyle = ring % 2 ? '#a8e063' : '#7ec8e3';
+        ctx.lineWidth = 3 * (1 - ringT);
+        ctx.beginPath();
+        ctx.ellipse(W/2, H/2, ringR, ringR * 0.6, 0, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // Blocks exploding outward
+      for (var i = 0; i < particles.length; i++) {
+        var pt = particles[i];
+        var angle = pt.seed * Math.PI * 2;
+        var dist = eT * W * (0.3 + pt.seed * 0.4);
+        var px = W/2 + Math.cos(angle) * dist;
+        var py = H/2 + Math.sin(angle) * dist * 0.6;
+        var col = lerpColorObj({r:212,g:168,b:75}, {r:106,g:176,b:76}, eT);
+        ctx.globalAlpha = 1 - eT * 0.5;
+        ctx.fillStyle = 'rgb(' + col.r + ',' + col.g + ',' + col.b + ')';
+        ctx.fillRect(px, py, pt.size * (1 + eT), pt.size * (1 + eT));
+      }
+      ctx.globalAlpha = 1;
+
+      showChapter(chap1, 0);
+      showChapter(chap2, Math.max(0, 1 - t * 3));
+      showChapter(chap3, Math.min(1, t * 2));
+    }
+
+    // === PHASE 4: Farlands World (0.85 - 1) ===
+    else {
+      var t = (p - 0.85) / 0.15;
+      var eT = easeInOut(t);
+
+      var bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, lerpColor('#87CEEB', '#5a9bd4', eT * 0.3));
+      bg.addColorStop(0.6, '#7ec8e3');
+      bg.addColorStop(1, '#4a9c28');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Sun
+      ctx.save();
+      ctx.globalAlpha = 0.9;
+      var sunGrad = ctx.createRadialGradient(W * 0.75, H * 0.25, 0, W * 0.75, H * 0.25, 80);
+      sunGrad.addColorStop(0, '#fff8dc');
+      sunGrad.addColorStop(0.5, '#ffd700');
+      sunGrad.addColorStop(1, 'transparent');
+      ctx.fillStyle = sunGrad;
+      ctx.beginPath();
+      ctx.arc(W * 0.75, H * 0.25, 80, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+
+      drawClouds(eT);
+      drawFarlandsTerrain(eT);
+
+      // Floating pixels
+      for (var i = 0; i < Math.min(particles.length, 60); i++) {
+        var pt = particles[i];
+        var px = (pt.x * W + eT * 50) % W;
+        var py = pt.y * H * 0.7 + Math.sin(Date.now() / 1000 + pt.seed * 10) * 10;
+        ctx.globalAlpha = 0.4;
+        ctx.fillStyle = i % 3 ? '#6ab04c' : '#a8e063';
+        ctx.fillRect(px, py, 3, 3);
+      }
+      ctx.globalAlpha = 1;
+
+      showChapter(chap1, 0);
+      showChapter(chap2, 0);
+      showChapter(chap3, 1);
+    }
+  }
+
+  function drawPillars(t) {
+    ctx.save();
+    ctx.globalAlpha = 0.4 * t;
+    for (var i = 0; i < 5; i++) {
+      var px = W * (0.1 + i * 0.2);
+      var pillarGrad = ctx.createLinearGradient(px - 30, 0, px + 30, 0);
+      pillarGrad.addColorStop(0, 'rgba(60, 40, 20, 0.8)');
+      pillarGrad.addColorStop(0.5, 'rgba(120, 85, 45, 0.6)');
+      pillarGrad.addColorStop(1, 'rgba(40, 25, 10, 0.9)');
+      ctx.fillStyle = pillarGrad;
+      ctx.fillRect(px - 25, H * 0.15, 50, H * 0.85);
+      ctx.fillStyle = 'rgba(160, 115, 60, 0.5)';
+      ctx.fillRect(px - 35, H * 0.15, 70, 15);
+      ctx.fillRect(px - 40, H * 0.15 - 8, 80, 10);
+    }
+    ctx.restore();
+  }
+
+  function drawBow(t) {
+    ctx.save();
+    ctx.translate(W * 0.25, H * 0.5);
+    ctx.globalAlpha = Math.min(1, t * 2);
+    ctx.strokeStyle = '#d4a84b';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(0, 0, 50, -Math.PI * 0.4, Math.PI * 0.4);
+    ctx.stroke();
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(50 * Math.cos(-Math.PI * 0.4), 50 * Math.sin(-Math.PI * 0.4));
+    ctx.lineTo(50 * Math.cos(Math.PI * 0.4), 50 * Math.sin(Math.PI * 0.4));
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function drawArrow(t) {
+    ctx.save();
+    var arrowX = lerp(W * 0.25, W * 0.78, t);
+    var arrowY = H * 0.5 + Math.sin(t * Math.PI) * H * 0.08;
+    ctx.translate(arrowX, arrowY);
+    ctx.rotate(Math.sin(t * Math.PI * 0.5) * 0.05);
+    ctx.fillStyle = '#8b6914';
+    ctx.fillRect(-40, -2, 60, 4);
+    ctx.fillStyle = '#d4a84b';
+    ctx.beginPath();
+    ctx.moveTo(20, -8);
+    ctx.lineTo(35, 0);
+    ctx.lineTo(20, 8);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillStyle = '#c0392b';
+    ctx.beginPath();
+    ctx.moveTo(-40, -6);
+    ctx.lineTo(-50, 0);
+    ctx.lineTo(-40, 6);
+    ctx.closePath();
+    ctx.fill();
+    ctx.globalAlpha = 0.3;
+    ctx.shadowColor = '#d4a84b';
+    ctx.shadowBlur = 20;
+    ctx.fillStyle = '#d4a84b';
+    ctx.fillRect(-40, -1, 60, 2);
+    ctx.restore();
+  }
+
+  function drawTerrain(t) {
+    ctx.save();
+    var groundY = H * 0.75;
+    var blockSize = Math.max(8, W / 80);
+    var cols = Math.ceil(W / blockSize) + 2;
+    for (var x = 0; x < cols; x++) {
+      var heightNoise = Math.sin(x * 0.3) * 0.3 + Math.sin(x * 0.1) * 0.5;
+      var terrainH = Math.floor((0.5 + heightNoise * 0.3) * t * 8);
+      for (var y = 0; y < terrainH; y++) {
+        var px = x * blockSize;
+        var py = groundY + y * blockSize;
+        if (y === 0) ctx.fillStyle = lerpColor('#8b7355', '#6ab04c', t);
+        else if (y < 3) ctx.fillStyle = lerpColor('#6b5a40', '#8b6914', t);
+        else ctx.fillStyle = lerpColor('#4a3a28', '#5a5a5a', t);
+        ctx.globalAlpha = Math.min(1, t * 2 - y * 0.1);
+        ctx.fillRect(px, py, blockSize - 1, blockSize - 1);
+      }
+    }
+    ctx.restore();
+  }
+
+  function drawClouds(t) {
+    ctx.save();
+    ctx.globalAlpha = 0.8 * t;
+    ctx.fillStyle = '#fff';
+    var clouds = [
+      { x: 0.1, y: 0.15, s: 1 },
+      { x: 0.4, y: 0.08, s: 1.4 },
+      { x: 0.7, y: 0.2, s: 0.8 },
+      { x: 0.9, y: 0.12, s: 1.1 }
+    ];
+    clouds.forEach(function(c) {
+      var cx = W * c.x, cy = H * c.y, bs = 12 * c.s;
+      for (var i = 0; i < 6; i++) {
+        ctx.fillRect(cx + i * bs * 0.7 - bs, cy + (i % 2) * bs * 0.3, bs, bs);
+      }
+    });
+    ctx.restore();
+  }
+
+  function drawFarlandsTerrain(t) {
+    ctx.save();
+    var groundY = H * 0.65;
+    var blockSize = Math.max(10, W / 60);
+    var cols = Math.ceil(W / blockSize) + 2;
+    for (var x = 0; x < cols; x++) {
+      var n = Math.sin(x * 0.25) * 0.5 + Math.sin(x * 0.08) * 0.8 + Math.sin(x * 0.5) * 0.2;
+      var h = Math.floor(2 + n * 3);
+      for (var y = 0; y < h + 6; y++) {
+        var px = x * blockSize;
+        var py = groundY + y * blockSize;
+        if (y === 0) ctx.fillStyle = '#6ab04c';
+        else if (y < 3) ctx.fillStyle = '#8b6914';
+        else if (y < 5) ctx.fillStyle = '#6b5030';
+        else ctx.fillStyle = '#5a5a5a';
+        ctx.globalAlpha = 0.9;
+        ctx.fillRect(px, py, blockSize - 1, blockSize - 1);
+        if (y === 0 && x % 3 === 0) {
+          ctx.fillStyle = '#4a9c28';
+          ctx.fillRect(px + 2, py - 3, 3, 4);
+          ctx.fillRect(px + blockSize - 6, py - 2, 3, 3);
+        }
+      }
+    }
+    // Trees
+    for (var tx = 0; tx < 4; tx++) {
+      var treeX = W * (0.15 + tx * 0.25);
+      var treeH = 4 + (tx % 2) * 2;
+      ctx.fillStyle = '#6b4423';
+      for (var ty = 0; ty < treeH; ty++) {
+        ctx.fillRect(treeX, groundY - (ty + 1) * blockSize, blockSize * 0.8, blockSize - 1);
+      }
+      ctx.fillStyle = '#3d7a28';
+      for (var ly = 0; ly < 3; ly++) {
+        for (var lx = -2; lx <= 2; lx++) {
+          if (Math.abs(lx) === 2 && ly === 2) continue;
+          ctx.fillRect(treeX + lx * blockSize * 0.8, groundY - (treeH + ly + 1) * blockSize, blockSize * 0.75, blockSize - 1);
+        }
+      }
+    }
+    ctx.restore();
+  }
+
+  function lerpColor(c1, c2, t) {
+    var a = hexToRgb(c1), b = hexToRgb(c2);
+    return 'rgb(' + Math.round(lerp(a.r,b.r,t)) + ',' + Math.round(lerp(a.g,b.g,t)) + ',' + Math.round(lerp(a.b,b.b,t)) + ')';
+  }
+  function lerpColorObj(a, b, t) {
+    return { r: Math.round(lerp(a.r,b.r,t)), g: Math.round(lerp(a.g,b.g,t)), b: Math.round(lerp(a.b,b.b,t)) };
+  }
+  function hexToRgb(hex) {
+    var h = hex.replace('#', '');
+    return { r: parseInt(h.substr(0,2),16), g: parseInt(h.substr(2,2),16), b: parseInt(h.substr(4,2),16) };
+  }
+
+  function showChapter(el, opacity) {
+    if (!el) return;
+    el.style.opacity = opacity;
+    el.style.transform = 'translate(-50%, calc(-50% + ' + ((1 - opacity) * 20) + 'px))';
+  }
+
+  function updateProgress() {
+    var rect = journey.getBoundingClientRect();
+    var total = journey.offsetHeight - window.innerHeight;
+    var scrolled = -rect.top;
+    progress = Math.max(0, Math.min(1, scrolled / total));
+  }
+
+  function render() {
+    updateProgress();
+    drawScene(progress);
+    requestAnimationFrame(render);
+  }
+
+  resize();
+  initParticles();
+  window.addEventListener('resize', function() {
+    resize();
+    initParticles();
+  });
+  render();
 
   // ============ SCROLL REVEAL ============
   var reveals = document.querySelectorAll('.reveal');
-  var revealObserver = new IntersectionObserver(function(entries) {
-    entries.forEach(function(entry) {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        revealObserver.unobserve(entry.target);
+  var revealObs = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        revealObs.unobserve(e.target);
       }
     });
-  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(function(el) { revealObs.observe(el); });
 
-  reveals.forEach(function(el) { revealObserver.observe(el); });
-
-  // ============ CINEMATIC TRANSITION CANVAS ============
-  var canvas = document.getElementById('transitionCanvas');
-  if (!canvas) return;
-
-  var ctx = canvas.getContext('2d');
-  var transitionSection = document.getElementById('transition');
-  var transitionText = document.getElementById('transitionText');
-  var animFrame = null;
-  var progress = 0;
-
-  // Pre-create pixel blocks for the transition
-  var blocks = [];
-  var COLS = 60;
-  var ROWS = 40;
-
-  function initBlocks() {
-    blocks = [];
-    for (var y = 0; y < ROWS; y++) {
-      for (var x = 0; x < COLS; x++) {
-        blocks.push({
-          x: x,
-          y: y,
-          delay: Math.random() * 0.4,
-          speed: 0.6 + Math.random() * 0.4,
-          size: 1
-        });
-      }
-    }
-  }
-
-  function resizeCanvas() {
-    canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-    canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-
-  // Ancient color palette
-  var ancientColors = ['#3d2e1f', '#5c4a32', '#8b7355', '#c9923c', '#a07830', '#6b5a40'];
-  // Farlands color palette
-  var farlandsColors = ['#5d9c3a', '#4a8030', '#6fb848', '#7ec0ee', '#8b6914', '#7f7f7f', '#a8e063'];
-
-  function drawTransition(p) {
-    var w = canvas.offsetWidth;
-    var h = canvas.offsetHeight;
-    var blockW = w / COLS;
-    var blockH = h / ROWS;
-
-    // Background gradient based on progress
-    var bgGrad = ctx.createLinearGradient(0, 0, w, h);
-    var bgR = Math.floor(26 + (13 - 26) * p);
-    var bgG = Math.floor(20 + (27 - 20) * p);
-    var bgB = Math.floor(16 + (10 - 16) * p);
-    bgGrad.addColorStop(0, 'rgb(' + bgR + ',' + bgG + ',' + bgB + ')');
-    bgGrad.addColorStop(1, 'rgb(' + Math.floor(bgR * 0.7) + ',' + Math.floor(bgG * 0.7) + ',' + Math.floor(bgB * 0.7) + ')');
-    ctx.fillStyle = bgGrad;
-    ctx.fillRect(0, 0, w, h);
-
-    // Draw blocks with transition
-    for (var i = 0; i < blocks.length; i++) {
-      var b = blocks[i];
-      var localP = Math.max(0, Math.min(1, (p - b.delay) / (1 - b.delay) * b.speed));
-
-      if (localP <= 0) continue;
-
-      var px = b.x * blockW;
-      var py = b.y * blockH;
-      var size = Math.min(blockW, blockH) - 2;
-
-      // Transition from ancient to farlands colors
-      var colorSet = localP < 0.5 ? ancientColors : farlandsColors;
-      var colorIdx = (b.x + b.y) % colorSet.length;
-
-      // Block formation animation
-      var scale = Math.min(1, localP * 2);
-      var drawSize = size * scale;
-      var offsetX = (size - drawSize) / 2;
-      var offsetY = (size - drawSize) / 2;
-
-      // Add some 3D perspective movement
-      var zOffset = (1 - localP) * 50;
-      var perspectiveX = (px - w / 2) * (1 - localP) * 0.3;
-      var perspectiveY = (py - h / 2) * (1 - localP) * 0.3;
-
-      ctx.fillStyle = colorSet[colorIdx];
-      ctx.globalAlpha = 0.7 + localP * 0.3;
-      ctx.fillRect(
-        px + offsetX + perspectiveX,
-        py + offsetY + perspectiveY + zOffset * 0.2,
-        drawSize,
-        drawSize
-      );
-
-      // Block highlight (top face for 3D effect)
-      if (localP > 0.3) {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
-        ctx.fillRect(
-          px + offsetX + perspectiveX,
-          py + offsetY + perspectiveY + zOffset * 0.2,
-          drawSize,
-          drawSize * 0.25
-        );
-      }
-    }
-
-    ctx.globalAlpha = 1;
-
-    // Light rays effect in the middle
-    if (p > 0.3 && p < 0.8) {
-      var rayP = (p - 0.3) / 0.5;
-      var rayAlpha = Math.sin(rayP * Math.PI) * 0.3;
-      var rayGrad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, w * 0.6);
-      rayGrad.addColorStop(0, 'rgba(255, 230, 180, ' + rayAlpha + ')');
-      rayGrad.addColorStop(1, 'transparent');
-      ctx.fillStyle = rayGrad;
-      ctx.fillRect(0, 0, w, h);
-    }
-  }
-
-  function updateTransition() {
-    var rect = transitionSection.getBoundingClientRect();
-    var sectionHeight = transitionSection.offsetHeight;
-    var viewportHeight = window.innerHeight;
-
-    // Calculate progress through the transition section
-    var scrolled = -rect.top;
-    var totalScroll = sectionHeight - viewportHeight;
-    progress = Math.max(0, Math.min(1, scrolled / totalScroll));
-
-    drawTransition(progress);
-
-    // Show/hide transition text
-    if (transitionText) {
-      if (progress > 0.2 && progress < 0.85) {
-        transitionText.classList.add('visible');
-      } else {
-        transitionText.classList.remove('visible');
-      }
-    }
-
-    animFrame = requestAnimationFrame(updateTransition);
-  }
-
-  // Initialize
-  initBlocks();
-  resizeCanvas();
-  window.addEventListener('resize', function() {
-    resizeCanvas();
-    initBlocks();
-  });
-
-  // Start animation loop
-  updateTransition();
-
-  // ============ SMOOTH SCROLL FOR NAV LINKS ============
-  document.querySelectorAll('a[href^="#"]').forEach(function(link) {
-    link.addEventListener('click', function(e) {
-      var target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
+  // ============ SMOOTH SCROLL ============
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var t = document.querySelector(this.getAttribute('href'));
+      if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
     });
-  });
-
-  // ============ NAV TRANSFORMATION ============
-  var nav = document.querySelector('.nav');
-  var farlandsSection = document.getElementById('farlands');
-
-  window.addEventListener('scroll', function() {
-    if (farlandsSection) {
-      var farlandsTop = farlandsSection.getBoundingClientRect().top;
-      if (farlandsTop < window.innerHeight * 0.5) {
-        nav.style.mixBlendMode = 'normal';
-      } else {
-        nav.style.mixBlendMode = 'difference';
-      }
-    }
   });
 
 })();
