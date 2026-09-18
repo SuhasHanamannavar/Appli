@@ -2,729 +2,843 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#1a1410">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f0f12">
 <title>FARLANDS — Hackathon 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,600&family=Source+Sans+3:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
   :root {
-    --ancient-gold: #d4a84b;
-    --ancient-gold-bright: #f0d080;
-    --ancient-stone: #8b7355;
-    --ancient-deep: #2a1f14;
-    --ancient-bg: #120c08;
-    --farlands-green: #6ab04c;
-    --farlands-green-dark: #4a7c35;
-    --farlands-sky: #7ec8e3;
-    --farlands-dirt: #8b6914;
-    --farlands-stone: #808080;
-    --farlands-bg: #0a1808;
-    --farlands-redstone: #c0392b;
-    --text-light: #f8f4e8;
-    --text-muted: rgba(248, 244, 232, 0.55);
+    --bg: #0f0f12;
+    --bg-elevated: #1a1a1f;
+    --bg-glass: rgba(26, 26, 31, 0.72);
+    --surface: rgba(255, 255, 255, 0.04);
+    --surface-hover: rgba(255, 255, 255, 0.07);
+    --border: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.14);
+    --text-primary: rgba(255, 255, 255, 0.95);
+    --text-secondary: rgba(255, 255, 255, 0.68);
+    --text-tertiary: rgba(255, 255, 255, 0.42);
+    --accent-gold: #d4b86a;
+    --accent-gold-soft: rgba(212, 184, 106, 0.18);
+    --accent-green: #7cb342;
+    --accent-green-soft: rgba(124, 179, 66, 0.16);
+    --accent-sky: #6ec5e8;
+    --radius-lg: 20px;
+    --radius-md: 14px;
+    --radius-sm: 10px;
+    --shadow-soft: 0 4px 24px rgba(0, 0, 0, 0.4);
+    --shadow-medium: 0 12px 48px rgba(0, 0, 0, 0.5);
+    --shadow-deep: 0 24px 80px rgba(0, 0, 0, 0.6);
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ease-smooth: cubic-bezier(0.25, 0.1, 0.25, 1);
   }
 
-  html { scroll-behavior: smooth; overflow-x: hidden; }
+  html { scroll-behavior: auto; overflow-x: hidden; }
 
   body {
-    font-family: 'Source Sans 3', sans-serif;
-    background: var(--ancient-bg);
-    color: var(--text-light);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
     overflow-x: hidden;
-    line-height: 1.6;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'ss01', 'cv11';
+    letter-spacing: -0.01em;
   }
 
-  /* ============ LOADING SCREEN ============ */
+  ::selection { background: var(--accent-gold-soft); color: #fff; }
+
+  /* ============ LOADER ============ */
   .loader {
     position: fixed;
     inset: 0;
-    background: #0a0806;
-    z-index: 9999;
+    background: #0a0a0c;
+    z-index: 99999;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 24px;
-    transition: opacity 0.6s, visibility 0.6s;
+    gap: 28px;
+    transition: opacity 0.8s var(--ease-smooth), visibility 0.8s;
   }
-  .loader.hidden { opacity: 0; visibility: hidden; }
-  .loader-arrow {
-    width: 60px;
-    height: 3px;
-    background: linear-gradient(90deg, transparent, var(--ancient-gold), var(--ancient-gold-bright));
-    position: relative;
-    animation: arrowLoad 1.2s ease-in-out infinite;
+  .loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+  .loader-ring {
+    width: 44px; height: 44px;
+    border: 2px solid rgba(255,255,255,0.08);
+    border-top-color: var(--accent-gold);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
   }
-  .loader-arrow::before {
-    content: '';
-    position: absolute;
-    right: -6px;
-    top: 50%;
-    transform: translateY(-50%);
-    border-left: 10px solid var(--ancient-gold-bright);
-    border-top: 6px solid transparent;
-    border-bottom: 6px solid transparent;
-  }
-  @keyframes arrowLoad {
-    0% { transform: translateX(-40px); opacity: 0; }
-    50% { opacity: 1; }
-    100% { transform: translateX(40px); opacity: 0; }
-  }
-  .loader-text {
-    font-family: 'Playfair Display', serif;
-    font-size: 12px;
-    letter-spacing: 0.3em;
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-label {
+    font-size: 11px;
+    letter-spacing: 0.32em;
     text-transform: uppercase;
-    color: var(--ancient-gold);
+    color: var(--text-tertiary);
+    font-weight: 500;
   }
 
   /* ============ NAVIGATION ============ */
   .nav {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    padding: 18px 32px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.5s ease;
+    top: 0; left: 0; right: 0;
+    z-index: 10000;
+    padding: 14px 24px;
+    transition: all 0.5s var(--ease-smooth);
   }
   .nav.scrolled {
-    background: rgba(10, 8, 6, 0.9);
-    backdrop-filter: blur(12px);
-    padding: 14px 32px;
+    padding: 10px 24px;
   }
-  .nav-logo {
-    font-family: 'Playfair Display', serif;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #fff;
-    white-space: nowrap;
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 18px;
+    background: var(--bg-glass);
+    backdrop-filter: saturate(180%) blur(24px);
+    -webkit-backdrop-filter: saturate(180%) blur(24px);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    transition: all 0.4s var(--ease-smooth);
   }
-  .nav-logo span {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    color: var(--ancient-gold);
+  .nav.scrolled .nav-inner {
+    box-shadow: 0 4px 32px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset;
   }
-  .nav-logo .arrow { color: rgba(255,255,255,0.4); margin: 0 6px; }
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    color: var(--text-primary);
+  }
+  .nav-brand-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent-gold);
+    box-shadow: 0 0 12px var(--accent-gold);
+    transition: all 0.4s;
+  }
+  .nav.farlands .nav-brand-dot {
+    background: var(--accent-green);
+    box-shadow: 0 0 12px var(--accent-green);
+  }
+  .nav-brand-sep {
+    color: var(--text-tertiary);
+    font-weight: 300;
+    margin: 0 2px;
+  }
+  .nav-brand span:last-child {
+    color: var(--accent-gold);
+    transition: color 0.4s;
+  }
+  .nav.farlands .nav-brand span:last-child { color: var(--accent-green); }
   .nav-links {
     display: flex;
-    gap: 28px;
+    gap: 4px;
     list-style: none;
   }
   .nav-links a {
-    color: rgba(255,255,255,0.8);
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 100px;
+    transition: all 0.3s var(--ease-smooth);
+  }
+  .nav-links a:hover {
+    color: var(--text-primary);
+    background: var(--surface);
+  }
+  .nav-cta {
+    padding: 8px 18px;
+    background: var(--accent-gold);
+    color: #1a1508;
     text-decoration: none;
     font-size: 12px;
     font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    transition: color 0.3s;
-    position: relative;
-  }
-  .nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 1.5px;
-    background: var(--ancient-gold);
-    transition: width 0.3s;
-  }
-  .nav-links a:hover { color: #fff; }
-  .nav-links a:hover::after { width: 100%; }
-  .nav-cta {
-    padding: 10px 22px;
-    border: 1.5px solid var(--ancient-gold);
-    color: var(--ancient-gold);
-    text-decoration: none;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    transition: all 0.3s;
-    font-family: 'Syne', sans-serif;
+    border-radius: 100px;
+    transition: all 0.3s var(--ease-spring);
+    letter-spacing: 0.01em;
   }
   .nav-cta:hover {
-    background: var(--ancient-gold);
-    color: var(--ancient-deep);
+    transform: scale(1.04);
+    box-shadow: 0 4px 20px rgba(212, 184, 106, 0.35);
   }
-  .nav-farlands .nav-logo span { color: var(--farlands-green); }
-  .nav-farlands .nav-cta {
-    border-color: var(--farlands-green);
-    color: var(--farlands-green);
+  .nav.farlands .nav-cta {
+    background: var(--accent-green);
+    color: #0a1404;
   }
-  .nav-farlands .nav-cta:hover {
-    background: var(--farlands-green);
-    color: #fff;
+  .nav.farlands .nav-cta:hover {
+    box-shadow: 0 4px 20px rgba(124, 179, 66, 0.35);
   }
-  .nav-farlands .nav-links a::after { background: var(--farlands-green); }
-
-  .nav-mobile-toggle {
+  .nav-mobile-btn {
     display: none;
-    flex-direction: column;
-    gap: 5px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
-  }
-  .nav-mobile-toggle span {
-    display: block;
-    width: 24px;
-    height: 2px;
-    background: #fff;
-    transition: all 0.3s;
+    padding: 6px;
+    color: var(--text-primary);
   }
 
-  /* ============ CINEMATIC JOURNEY ============ */
-  .journey {
+  /* ============ HERO — VISHVAKARMA ERA ============ */
+  .hero {
     position: relative;
-    height: 400vh;
-    background: #000;
+    height: 100vh;
+    min-height: 640px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
-  .journey-sticky {
+  .hero-layer {
+    position: absolute;
+    inset: -4%;
+    will-change: transform;
+  }
+  .hero-bg-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    filter: brightness(0.55) contrast(1.05) saturate(0.9);
+  }
+  .hero-vignette {
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse at 50% 40%, transparent 0%, rgba(15,15,18,0.4) 55%, rgba(15,15,18,0.92) 100%),
+      linear-gradient(180deg, rgba(15,15,18,0.3) 0%, transparent 30%, transparent 60%, rgba(15,15,18,0.85) 100%);
+  }
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  .hero-content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    max-width: 820px;
+    padding: 0 24px;
+    will-change: transform, opacity;
+  }
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.36em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 28px;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: riseIn 0.9s var(--ease-smooth) 0.3s forwards;
+  }
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    display: block;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold));
+  }
+  .hero-eyebrow::after {
+    background: linear-gradient(90deg, var(--accent-gold), transparent);
+  }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(52px, 9vw, 112px);
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 20px;
+    opacity: 0;
+    transform: translateY(24px);
+    animation: riseIn 1s var(--ease-smooth) 0.5s forwards;
+  }
+  .hero-title em {
+    font-style: italic;
+    font-weight: 400;
+    background: linear-gradient(135deg, #f5e6c0 0%, var(--accent-gold) 50%, #a8883a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(16px, 2vw, 22px);
+    font-weight: 400;
+    font-style: italic;
+    color: rgba(255,255,255,0.62);
+    letter-spacing: 0.005em;
+    margin-bottom: 44px;
+    opacity: 0;
+    transform: translateY(16px);
+    animation: riseIn 0.9s var(--ease-smooth) 0.75s forwards;
+  }
+  .hero-scroll {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    font-weight: 500;
+    opacity: 0;
+    animation: riseIn 0.8s var(--ease-smooth) 1.1s forwards;
+  }
+  .hero-scroll-line {
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-scroll-line::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(180deg, transparent, var(--accent-gold));
+    animation: scrollDown 2.2s ease-in-out infinite;
+  }
+  @keyframes scrollDown {
+    0% { top: -50%; }
+    100% { top: 100%; }
+  }
+  @keyframes riseIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ TRANSITION SECTION ============ */
+  .transition {
+    position: relative;
+    height: 220vh;
+    background: var(--bg);
+  }
+  .transition-sticky {
     position: sticky;
     top: 0;
     height: 100vh;
     overflow: hidden;
   }
-  #journeyCanvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  .journey-overlay {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 2;
-  }
-  .journey-chapter {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    width: 90%;
-    max-width: 700px;
-  }
-  .journey-chapter .chapter-label {
-    font-family: 'Source Sans 3', sans-serif;
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
-    opacity: 0.7;
-  }
-  .journey-chapter .chapter-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(28px, 5vw, 56px);
-    font-weight: 700;
-    line-height: 1.1;
-    letter-spacing: -0.01em;
-  }
-  .journey-chapter .chapter-sub {
-    font-family: 'Playfair Display', serif;
-    font-style: italic;
-    font-size: clamp(14px, 2vw, 20px);
-    margin-top: 12px;
-    opacity: 0.6;
-  }
-  .chapter-ancient .chapter-label { color: var(--ancient-gold); }
-  .chapter-ancient .chapter-title {
-    background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .chapter-journey .chapter-label { color: #c9a860; }
-  .chapter-journey .chapter-title {
-    background: linear-gradient(90deg, var(--ancient-gold), var(--farlands-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .chapter-farlands .chapter-label { color: var(--farlands-green); }
-  .chapter-farlands .chapter-title {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    background: linear-gradient(180deg, #fff, var(--farlands-green));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  .scroll-hint {
-    position: absolute;
-    bottom: 32px;
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: rgba(255,255,255,0.4);
-    animation: hintFloat 2s ease-in-out infinite;
-  }
-  .scroll-hint-line {
-    width: 1px;
-    height: 40px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.5), transparent);
-  }
-  @keyframes hintFloat {
-    0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
-    50% { transform: translateX(-50%) translateY(8px); opacity: 0.5; }
-  }
-
-  /* ============ FARLANDS HERO ============ */
-  .farlands-hero {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-    background: var(--farlands-bg);
-  }
-  .farlands-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/6262354c5efa45089dc1ac7ea69e87d7.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298743&x-signature=0yNJpxAPRnzq68WafxcWQm1TwPc%3D');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.55;
-  }
-  .farlands-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      90deg,
-      rgba(10, 24, 8, 0.95) 0%,
-      rgba(10, 24, 8, 0.75) 35%,
-      rgba(10, 24, 8, 0.4) 65%,
-      rgba(10, 24, 8, 0.15) 100%
-    );
-  }
-  .farlands-content {
-    position: relative;
-    z-index: 2;
-    padding: 120px 48px 120px 64px;
-    max-width: 680px;
-  }
-  .farlands-eyebrow {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--farlands-green);
-    margin-bottom: 20px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-  }
-  .farlands-eyebrow::before {
-    content: '';
-    display: block;
-    width: 36px;
-    height: 2px;
-    background: var(--farlands-green);
-  }
-  .farlands-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(44px, 7vw, 88px);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
-    margin-bottom: 24px;
-  }
-  .farlands-title .l1 { display: block; color: #fff; }
-  .farlands-title .l2 {
-    display: block;
-    background: linear-gradient(90deg, #a8e063, #4a9c28);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .farlands-tagline {
-    font-size: 17px;
-    color: rgba(255, 255, 255, 0.72);
-    margin-bottom: 32px;
-    line-height: 1.7;
-  }
-  .farlands-meta {
-    display: flex;
-    gap: 40px;
-    margin-bottom: 36px;
-    flex-wrap: wrap;
-  }
-  .meta-item { display: flex; flex-direction: column; gap: 4px; }
-  .meta-label {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.45);
-    font-weight: 600;
-  }
-  .meta-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
-    color: #fff;
-  }
-  .btn-primary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 30px;
-    background: var(--farlands-green);
-    color: #fff;
-    text-decoration: none;
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
-  }
-  .btn-primary:hover {
-    background: #7cc95a;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 30px rgba(106, 176, 76, 0.4);
-  }
-  .btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 14px 30px;
-    background: transparent;
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border: 1.5px solid rgba(255, 255, 255, 0.25);
-    cursor: pointer;
-    transition: all 0.3s;
-    margin-left: 12px;
-  }
-  .btn-secondary:hover {
-    border-color: rgba(255,255,255,0.6);
-    color: #fff;
-    background: rgba(255,255,255,0.06);
-  }
-
-  /* ============ SECTION COMMON ============ */
-  .section {
-    padding: 120px 64px;
-    position: relative;
-  }
-  .section-head {
-    margin-bottom: 64px;
-    max-width: 680px;
-  }
-  .section-num {
-    font-family: 'Syne', sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.25em;
-    color: var(--farlands-green);
-    margin-bottom: 14px;
-  }
-  .section-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(32px, 4.5vw, 56px);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    margin-bottom: 16px;
-    color: #fff;
-  }
-  .section-desc {
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.6);
-    line-height: 1.75;
-  }
-
-  /* ============ TRACKS ============ */
-  .tracks-section { background: var(--farlands-bg); }
-  .tracks-grid {
-    display: grid;
-    grid-template-columns: repeat(12, 1fr);
-    gap: 20px;
-  }
-  .track-card {
-    position: relative;
-    padding: 36px 28px;
-    border: 1px solid rgba(106, 176, 76, 0.2);
-    background: rgba(10, 24, 8, 0.5);
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    overflow: hidden;
-  }
-  .track-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 3px;
-    background: var(--farlands-green);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s;
-  }
-  .track-card:hover::before { transform: scaleX(1); }
-  .track-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--farlands-green);
-    background: rgba(106, 176, 76, 0.06);
-  }
-  .track-card.t1 { grid-column: span 5; }
-  .track-card.t2 { grid-column: span 4; }
-  .track-card.t3 { grid-column: span 3; }
-  .track-card.t4 { grid-column: span 4; }
-  .track-card.t5 { grid-column: span 8; }
-
-  .track-icon {
-    width: 44px; height: 44px;
-    margin-bottom: 18px;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(106, 176, 76, 0.12);
-    border: 1px solid rgba(106, 176, 76, 0.2);
-  }
-  .track-icon svg { width: 22px; height: 22px; stroke: var(--farlands-green); fill: none; stroke-width: 2; }
-  .track-card h3 {
-    font-family: 'Syne', sans-serif;
-    font-size: 20px; font-weight: 700;
-    margin-bottom: 10px; color: #fff;
-  }
-  .track-card p {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.58);
-    line-height: 1.7;
-  }
-  .mini-blocks {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    gap: 3px;
-    margin-top: 20px;
-    opacity: 0.35;
-  }
-  .mini-blocks span {
-    aspect-ratio: 1;
-    background: var(--farlands-green);
-  }
-  .mini-blocks span:nth-child(2n) { background: #4a7c35; }
-  .mini-blocks span:nth-child(3n) { background: var(--farlands-dirt); }
-  .mini-blocks span:nth-child(5n) { background: #7ec8e3; }
-  .mini-blocks span:nth-child(7n) { background: var(--farlands-redstone); }
-
-  /* ============ MOBS SHOWCASE ============ */
-  .mobs-section {
-    background: linear-gradient(180deg, var(--farlands-bg) 0%, #081406 100%);
-    overflow: hidden;
-  }
-  .mobs-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-  }
-  .mob-card {
-    position: relative;
-    aspect-ratio: 3/4;
-    border: 1px solid rgba(255,255,255,0.08);
-    background: rgba(255,255,255,0.02);
-    overflow: hidden;
-    transition: all 0.4s;
-  }
-  .mob-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(106, 176, 76, 0.4);
-  }
-  .mob-art {
+  .trans-layer {
     position: absolute;
     inset: 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    will-change: transform, opacity;
   }
-  .mob-info {
+  .trans-img-wrap {
+    position: relative;
+    width: 280px;
+    height: 480px;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-deep);
+    will-change: transform, width, height;
+  }
+  .trans-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .trans-vishva { z-index: 3; }
+  .trans-vishva .trans-img-wrap {
+    border: 1px solid rgba(212, 184, 106, 0.2);
+  }
+  .trans-minecraft { z-index: 2; }
+  .trans-minecraft .trans-img-wrap {
+    width: 100vw;
+    height: 100vh;
+    border-radius: 0;
+    box-shadow: none;
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  .trans-minecraft .trans-img-wrap img {
+    filter: brightness(0.45) saturate(1.1);
+  }
+  .trans-overlay {
     position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 20px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
   }
-  .mob-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
+  .trans-text {
+    text-align: center;
+    max-width: 600px;
+    padding: 0 24px;
+    opacity: 0;
+    transform: scale(0.96);
+    will-change: transform, opacity;
+  }
+  .trans-text-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--accent-gold);
+    margin-bottom: 18px;
+  }
+  .trans-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4.5vw, 52px);
+    font-weight: 500;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
     color: #fff;
   }
-  .mob-role {
-    font-size: 12px;
+  .trans-text h2 em {
+    font-style: italic;
+    background: linear-gradient(90deg, var(--accent-gold), var(--accent-green));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .trans-text p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 16px;
     color: rgba(255,255,255,0.5);
-    letter-spacing: 0.05em;
+    margin-top: 14px;
   }
-  /* Pixel art characters */
-  .pixel-steve {
-    width: 8px; height: 8px;
-    box-shadow:
-      16px 0 0 #2a1a0a, 24px 0 0 #2a1a0a, 32px 0 0 #2a1a0a, 40px 0 0 #2a1a0a,
-      8px 8px 0 #2a1a0a, 16px 8px 0 #2a1a0a, 24px 8px 0 #2a1a0a, 32px 8px 0 #2a1a0a, 40px 8px 0 #2a1a0a, 48px 8px 0 #2a1a0a,
-      8px 16px 0 #d4a574, 16px 16px 0 #d4a574, 24px 16px 0 #d4a574, 32px 16px 0 #d4a574, 40px 16px 0 #d4a574, 48px 16px 0 #d4a574,
-      8px 24px 0 #d4a574, 16px 24px 0 #fff, 24px 24px 0 #d4a574, 32px 24px 0 #d4a574, 40px 24px 0 #fff, 48px 24px 0 #d4a574,
-      8px 32px 0 #d4a574, 16px 32px 0 #d4a574, 24px 32px 0 #6b4423, 32px 32px 0 #6b4423, 40px 32px 0 #d4a574, 48px 32px 0 #d4a574,
-      8px 40px 0 #3498db, 16px 40px 0 #3498db, 24px 40px 0 #3498db, 32px 40px 0 #3498db, 40px 40px 0 #3498db, 48px 40px 0 #3498db,
-      8px 48px 0 #3498db, 16px 48px 0 #2980b9, 24px 48px 0 #3498db, 32px 48px 0 #3498db, 40px 48px 0 #2980b9, 48px 48px 0 #3498db,
-      16px 56px 0 #2c3e50, 24px 56px 0 #2c3e50, 32px 56px 0 #2c3e50, 40px 56px 0 #2c3e50,
-      16px 64px 0 #2c3e50, 24px 64px 0 #2c3e50, 32px 64px 0 #2c3e50, 40px 64px 0 #2c3e50;
+
+  /* ============ FARLANDS HERO ============ */
+  .farlands {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
   }
-  .pixel-herobrine {
-    width: 8px; height: 8px;
-    box-shadow:
-      16px 0 0 #1a1a1a, 24px 0 0 #1a1a1a, 32px 0 0 #1a1a1a, 40px 0 0 #1a1a1a,
-      8px 8px 0 #1a1a1a, 16px 8px 0 #1a1a1a, 24px 8px 0 #1a1a1a, 32px 8px 0 #1a1a1a, 40px 8px 0 #1a1a1a, 48px 8px 0 #1a1a1a,
-      8px 16px 0 #c4a06a, 16px 16px 0 #c4a06a, 24px 16px 0 #c4a06a, 32px 16px 0 #c4a06a, 40px 16px 0 #c4a06a, 48px 16px 0 #c4a06a,
-      8px 24px 0 #c4a06a, 16px 24px 0 #fff, 24px 24px 0 #c4a06a, 32px 24px 0 #c4a06a, 40px 24px 0 #fff, 48px 24px 0 #c4a06a,
-      8px 32px 0 #c4a06a, 16px 32px 0 #c4a06a, 24px 32px 0 #5a3a1a, 32px 32px 0 #5a3a1a, 40px 32px 0 #c4a06a, 48px 32px 0 #c4a06a,
-      8px 40px 0 #2980b9, 16px 40px 0 #2980b9, 24px 40px 0 #2980b9, 32px 40px 0 #2980b9, 40px 40px 0 #2980b9, 48px 40px 0 #2980b9,
-      8px 48px 0 #2980b9, 16px 48px 0 #1e6090, 24px 48px 0 #2980b9, 32px 48px 0 #2980b9, 40px 48px 0 #1e6090, 48px 48px 0 #2980b9,
-      16px 56px 0 #1a252f, 24px 56px 0 #1a252f, 32px 56px 0 #1a252f, 40px 56px 0 #1a252f,
-      16px 64px 0 #1a252f, 24px 64px 0 #1a252f, 32px 64px 0 #1a252f, 40px 64px 0 #1a252f;
-    filter: drop-shadow(0 0 8px rgba(255,255,255,0.3));
+  .farlands-bg {
+    position: absolute;
+    inset: 0;
   }
-  .pixel-enderman {
-    width: 8px; height: 8px;
-    box-shadow:
-      16px 0 0 #0a0a0a, 24px 0 0 #0a0a0a, 32px 0 0 #0a0a0a, 40px 0 0 #0a0a0a,
-      16px 8px 0 #0a0a0a, 24px 8px 0 #0a0a0a, 32px 8px 0 #0a0a0a, 40px 8px 0 #0a0a0a,
-      16px 16px 0 #1a0a2a, 24px 16px 0 #1a0a2a, 32px 16px 0 #1a0a2a, 40px 16px 0 #1a0a2a,
-      16px 24px 0 #1a0a2a, 24px 24px 0 #c0392b, 32px 24px 0 #c0392b, 40px 24px 0 #1a0a2a,
-      16px 32px 0 #1a0a2a, 24px 32px 0 #1a0a2a, 32px 32px 0 #1a0a2a, 40px 32px 0 #1a0a2a,
-      24px 40px 0 #0a0a0a, 32px 40px 0 #0a0a0a,
-      24px 48px 0 #0a0a0a, 32px 48px 0 #0a0a0a,
-      24px 56px 0 #0a0a0a, 32px 56px 0 #0a0a0a,
-      24px 64px 0 #0a0a0a, 32px 64px 0 #0a0a0a,
-      24px 72px 0 #0a0a0a, 32px 72px 0 #0a0a0a;
-    filter: drop-shadow(0 0 12px rgba(192, 57, 43, 0.4));
+  .farlands-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.4) saturate(1.15);
   }
-  .pixel-creeper {
-    width: 8px; height: 8px;
-    box-shadow:
-      8px 0 0 #2d5016, 16px 0 0 #2d5016, 24px 0 0 #2d5016, 32px 0 0 #2d5016, 40px 0 0 #2d5016, 48px 0 0 #2d5016,
-      8px 8px 0 #3d6b1e, 16px 8px 0 #2d5016, 24px 8px 0 #3d6b1e, 32px 8px 0 #3d6b1e, 40px 8px 0 #2d5016, 48px 8px 0 #3d6b1e,
-      8px 16px 0 #2d5016, 16px 16px 0 #0a0a0a, 24px 16px 0 #2d5016, 32px 16px 0 #2d5016, 40px 16px 0 #0a0a0a, 48px 16px 0 #2d5016,
-      8px 24px 0 #2d5016, 16px 24px 0 #0a0a0a, 24px 24px 0 #2d5016, 32px 24px 0 #2d5016, 40px 24px 0 #0a0a0a, 48px 24px 0 #2d5016,
-      8px 32px 0 #2d5016, 16px 32px 0 #2d5016, 24px 32px 0 #0a0a0a, 32px 32px 0 #0a0a0a, 40px 32px 0 #2d5016, 48px 32px 0 #2d5016,
-      8px 40px 0 #3d6b1e, 16px 40px 0 #2d5016, 24px 40px 0 #0a0a0a, 32px 40px 0 #0a0a0a, 40px 40px 0 #2d5016, 48px 40px 0 #3d6b1e,
-      16px 48px 0 #2d5016, 24px 48px 0 #0a0a0a, 32px 48px 0 #0a0a0a, 40px 48px 0 #2d5016,
-      16px 56px 0 #2d5016, 24px 56px 0 #2d5016, 32px 56px 0 #2d5016, 40px 56px 0 #2d5016,
-      8px 64px 0 #2d5016, 16px 64px 0 #2d5016, 24px 64px 0 #2d5016, 32px 64px 0 #2d5016, 40px 64px 0 #2d5016, 48px 64px 0 #2d5016,
-      8px 72px 0 #1a3009, 16px 72px 0 #2d5016, 24px 72px 0 #2d5016, 32px 72px 0 #2d5016, 40px 72px 0 #2d5016, 48px 72px 0 #1a3009;
+  .farlands-bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(15,15,18,0.95) 0%, rgba(15,15,18,0.75) 35%, rgba(15,15,18,0.35) 70%, rgba(15,15,18,0.1) 100%);
+  }
+  .farlands-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 140px 24px 100px;
+    width: 100%;
+  }
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-green);
+    margin-bottom: 24px;
+  }
+  .eyebrow::before {
+    content: '';
+    display: block;
+    width: 32px;
+    height: 1.5px;
+    background: var(--accent-green);
+    border-radius: 2px;
+  }
+  .farlands-title {
+    font-size: clamp(44px, 7vw, 96px);
+    font-weight: 700;
+    line-height: 0.96;
+    letter-spacing: -0.035em;
+    color: #fff;
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+  .farlands-title .line2 {
+    display: block;
+    background: linear-gradient(135deg, #b8e986 0%, var(--accent-green) 55%, #4a8020 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .farlands-desc {
+    font-size: 17px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin-bottom: 40px;
+    line-height: 1.65;
+  }
+  .meta-grid {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 44px;
+    flex-wrap: wrap;
+  }
+  .meta-item { display: flex; flex-direction: column; gap: 4px; }
+  .meta-item .k {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+  .meta-item .v {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.02em;
+  }
+  .btn-group { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 26px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    transition: all 0.35s var(--ease-spring);
+    letter-spacing: 0.01em;
+    font-family: inherit;
+  }
+  .btn-primary {
+    background: var(--accent-green);
+    color: #0a1404;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 10px 32px rgba(124, 179, 66, 0.35);
+  }
+  .btn-ghost {
+    background: var(--surface);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    backdrop-filter: blur(8px);
+  }
+  .btn-ghost:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-hover);
+    transform: translateY(-2px);
+  }
+
+  /* ============ SECTION COMMON ============ */
+  .section {
+    position: relative;
+    padding: 120px 24px;
+    max-width: 1240px;
+    margin: 0 auto;
+  }
+  .section-head {
+    margin-bottom: 64px;
+    max-width: 640px;
+  }
+  .section-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-green);
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+    color: #fff;
+    margin-bottom: 14px;
+  }
+  .section-desc {
+    font-size: 16px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+
+  /* ============ TRACKS ============ */
+  .tracks-section { background: var(--bg); }
+  .tracks-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+  }
+  .track {
+    position: relative;
+    padding: 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(8px);
+    transition: all 0.45s var(--ease-spring);
+    overflow: hidden;
+  }
+  .track::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--accent-green-soft), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .track:hover {
+    transform: translateY(-4px);
+    border-color: rgba(124, 179, 66, 0.35);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 1px 0 rgba(255,255,255,0.06) inset;
+  }
+  .track:hover::before { opacity: 1; }
+  .track > * { position: relative; z-index: 1; }
+  .track.t1 { grid-column: span 5; }
+  .track.t2 { grid-column: span 4; }
+  .track.t3 { grid-column: span 3; }
+  .track.t4 { grid-column: span 4; }
+  .track.t5 { grid-column: span 8; }
+  .track-icon {
+    width: 40px; height: 40px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--accent-green-soft);
+    border-radius: var(--radius-md);
+    margin-bottom: 18px;
+    transition: transform 0.4s var(--ease-spring);
+  }
+  .track:hover .track-icon { transform: scale(1.08) rotate(-3deg); }
+  .track-icon svg { width: 20px; height: 20px; stroke: var(--accent-green); fill: none; stroke-width: 1.8; }
+  .track h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .track p {
+    font-size: 13.5px;
+    color: var(--text-secondary);
+    line-height: 1.65;
+  }
+
+  /* ============ CHARACTERS ============ */
+  .chars-section {
+    background: linear-gradient(180deg, var(--bg) 0%, #0c0c0f 100%);
+  }
+  .chars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+  }
+  .char-card {
+    position: relative;
+    aspect-ratio: 3/4;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: all 0.5s var(--ease-spring);
+    cursor: default;
+  }
+  .char-card:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: var(--shadow-medium);
+    border-color: var(--border-hover);
+  }
+  .char-art {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.6s var(--ease-smooth);
+  }
+  .char-card:hover .char-art { transform: scale(1.08); }
+  .char-info {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 22px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  }
+  .char-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.01em;
+  }
+  .char-role {
+    font-size: 12px;
+    color: var(--text-tertiary);
+    margin-top: 3px;
+    font-style: italic;
+  }
+  .pa { width:7px; height:7px; position:relative; }
+  .pa::after {
+    content:''; position:absolute; inset:0;
+    box-shadow: var(--bs);
+  }
+  .steve { --bs:
+    14px 0 0 #2a1a0a,21px 0 0 #2a1a0a,28px 0 0 #2a1a0a,35px 0 0 #2a1a0a,
+    7px 7px 0 #2a1a0a,14px 7px 0 #2a1a0a,21px 7px 0 #2a1a0a,28px 7px 0 #2a1a0a,35px 7px 0 #2a1a0a,42px 7px 0 #2a1a0a,
+    7px 14px 0 #d4a574,14px 14px 0 #d4a574,21px 14px 0 #d4a574,28px 14px 0 #d4a574,35px 14px 0 #d4a574,42px 14px 0 #d4a574,
+    7px 21px 0 #d4a574,14px 21px 0 #fff,21px 21px 0 #d4a574,28px 21px 0 #d4a574,35px 21px 0 #fff,42px 21px 0 #d4a574,
+    7px 28px 0 #d4a574,14px 28px 0 #d4a574,21px 28px 0 #6b4423,28px 28px 0 #6b4423,35px 28px 0 #d4a574,42px 28px 0 #d4a574,
+    7px 35px 0 #3498db,14px 35px 0 #3498db,21px 35px 0 #3498db,28px 35px 0 #3498db,35px 35px 0 #3498db,42px 35px 0 #3498db,
+    7px 42px 0 #3498db,14px 42px 0 #2980b9,21px 42px 0 #3498db,28px 42px 0 #3498db,35px 42px 0 #2980b9,42px 42px 0 #3498db,
+    14px 49px 0 #2c3e50,21px 49px 0 #2c3e50,28px 49px 0 #2c3e50,35px 49px 0 #2c3e50,
+    14px 56px 0 #2c3e50,21px 56px 0 #2c3e50,28px 56px 0 #2c3e50,35px 56px 0 #2c3e50;
+  }
+  .herobrine { --bs:
+    14px 0 0 #1a1a1a,21px 0 0 #1a1a1a,28px 0 0 #1a1a1a,35px 0 0 #1a1a1a,
+    7px 7px 0 #1a1a1a,14px 7px 0 #1a1a1a,21px 7px 0 #1a1a1a,28px 7px 0 #1a1a1a,35px 7px 0 #1a1a1a,42px 7px 0 #1a1a1a,
+    7px 14px 0 #c4a06a,14px 14px 0 #c4a06a,21px 14px 0 #c4a06a,28px 14px 0 #c4a06a,35px 14px 0 #c4a06a,42px 14px 0 #c4a06a,
+    7px 21px 0 #c4a06a,14px 21px 0 #fff,21px 21px 0 #c4a06a,28px 21px 0 #c4a06a,35px 21px 0 #fff,42px 21px 0 #c4a06a,
+    7px 28px 0 #c4a06a,14px 28px 0 #c4a06a,21px 28px 0 #5a3a1a,28px 28px 0 #5a3a1a,35px 28px 0 #c4a06a,42px 28px 0 #c4a06a,
+    7px 35px 0 #2980b9,14px 35px 0 #2980b9,21px 35px 0 #2980b9,28px 35px 0 #2980b9,35px 35px 0 #2980b9,42px 35px 0 #2980b9,
+    7px 42px 0 #2980b9,14px 42px 0 #1e6090,21px 42px 0 #2980b9,28px 42px 0 #2980b9,35px 42px 0 #1e6090,42px 42px 0 #2980b9,
+    14px 49px 0 #1a252f,21px 49px 0 #1a252f,28px 49px 0 #1a252f,35px 49px 0 #1a252f,
+    14px 56px 0 #1a252f,21px 56px 0 #1a252f,28px 56px 0 #1a252f,35px 56px 0 #1a252f;
+    filter: drop-shadow(0 0 10px rgba(255,255,255,0.25));
+  }
+  .enderman { --bs:
+    14px 0 0 #0a0a0a,21px 0 0 #0a0a0a,28px 0 0 #0a0a0a,35px 0 0 #0a0a0a,
+    14px 7px 0 #0a0a0a,21px 7px 0 #0a0a0a,28px 7px 0 #0a0a0a,35px 7px 0 #0a0a0a,
+    14px 14px 0 #1a0a2a,21px 14px 0 #1a0a2a,28px 14px 0 #1a0a2a,35px 14px 0 #1a0a2a,
+    14px 21px 0 #1a0a2a,21px 21px 0 #c0392b,28px 21px 0 #c0392b,35px 21px 0 #1a0a2a,
+    14px 28px 0 #1a0a2a,21px 28px 0 #1a0a2a,28px 28px 0 #1a0a2a,35px 28px 0 #1a0a2a,
+    21px 35px 0 #0a0a0a,28px 35px 0 #0a0a0a,
+    21px 42px 0 #0a0a0a,28px 42px 0 #0a0a0a,
+    21px 49px 0 #0a0a0a,28px 49px 0 #0a0a0a,
+    21px 56px 0 #0a0a0a,28px 56px 0 #0a0a0a,
+    21px 63px 0 #0a0a0a,28px 63px 0 #0a0a0a;
+    filter: drop-shadow(0 0 14px rgba(192, 57, 43, 0.4));
+  }
+  .creeper { --bs:
+    7px 0 0 #2d5016,14px 0 0 #2d5016,21px 0 0 #2d5016,28px 0 0 #2d5016,35px 0 0 #2d5016,42px 0 0 #2d5016,
+    7px 7px 0 #3d6b1e,14px 7px 0 #2d5016,21px 7px 0 #3d6b1e,28px 7px 0 #3d6b1e,35px 7px 0 #2d5016,42px 7px 0 #3d6b1e,
+    7px 14px 0 #2d5016,14px 14px 0 #0a0a0a,21px 14px 0 #2d5016,28px 14px 0 #2d5016,35px 14px 0 #0a0a0a,42px 14px 0 #2d5016,
+    7px 21px 0 #2d5016,14px 21px 0 #0a0a0a,21px 21px 0 #2d5016,28px 21px 0 #2d5016,35px 21px 0 #0a0a0a,42px 21px 0 #2d5016,
+    7px 28px 0 #2d5016,14px 28px 0 #2d5016,21px 28px 0 #0a0a0a,28px 28px 0 #0a0a0a,35px 28px 0 #2d5016,42px 28px 0 #2d5016,
+    7px 35px 0 #3d6b1e,14px 35px 0 #2d5016,21px 35px 0 #0a0a0a,28px 35px 0 #0a0a0a,35px 35px 0 #2d5016,42px 35px 0 #3d6b1e,
+    14px 42px 0 #2d5016,21px 42px 0 #0a0a0a,28px 42px 0 #0a0a0a,35px 42px 0 #2d5016,
+    14px 49px 0 #2d5016,21px 49px 0 #2d5016,28px 49px 0 #2d5016,35px 49px 0 #2d5016,
+    7px 56px 0 #2d5016,14px 56px 0 #2d5016,21px 56px 0 #2d5016,28px 56px 0 #2d5016,35px 56px 0 #2d5016,42px 56px 0 #2d5016;
   }
 
   /* ============ PRIZES ============ */
-  .prizes-section { background: #081406; }
+  .prizes-section { background: #0c0c0f; }
   .prizes-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    gap: 16px;
     align-items: end;
   }
-  .prize-card {
+  .prize {
     position: relative;
-    padding: 40px 28px;
-    border: 1.5px solid rgba(255,255,255,0.08);
-    background: rgba(255, 255, 255, 0.015);
-    transition: all 0.4s;
+    padding: 36px 28px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    backdrop-filter: blur(8px);
+    transition: all 0.45s var(--ease-spring);
   }
-  .prize-card:hover {
-    transform: translateY(-6px);
-    border-color: rgba(106, 176, 76, 0.4);
+  .prize:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-hover);
+    box-shadow: var(--shadow-medium);
   }
-  .prize-card.winner {
-    border-color: rgba(212, 168, 75, 0.5);
-    background: linear-gradient(180deg, rgba(212, 168, 75, 0.06), transparent);
-    transform: scale(1.03);
+  .prize.winner {
+    padding: 44px 32px;
+    background: linear-gradient(180deg, rgba(212,184,106,0.1), rgba(212,184,106,0.02));
+    border-color: rgba(212,184,106,0.3);
   }
-  .prize-card.winner:hover {
-    border-color: var(--ancient-gold);
-    box-shadow: 0 20px 50px rgba(212, 168, 75, 0.15);
+  .prize.winner:hover {
+    border-color: rgba(212,184,106,0.5);
+    box-shadow: 0 20px 60px rgba(212,184,106,0.12);
   }
   .prize-rank {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: var(--farlands-green);
+    color: var(--text-tertiary);
     margin-bottom: 20px;
   }
-  .prize-card.winner .prize-rank { color: var(--ancient-gold); }
+  .prize.winner .prize-rank { color: var(--accent-gold); }
   .prize-amount {
-    font-family: 'Syne', sans-serif;
-    font-size: 48px;
-    font-weight: 800;
+    font-size: clamp(36px, 4vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.03em;
     line-height: 1;
-    margin-bottom: 6px;
     color: #fff;
+    margin-bottom: 6px;
   }
-  .prize-card.winner .prize-amount {
-    background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
+  .prize.winner .prize-amount {
+    background: linear-gradient(135deg, #f5e6c0, var(--accent-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .prize-label {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.45);
+    color: var(--text-tertiary);
     margin-bottom: 24px;
-    letter-spacing: 0.03em;
   }
-  .prize-perks { list-style: none; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px; }
+  .prize-perks {
+    list-style: none;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+  }
   .prize-perks li {
-    padding: 8px 0;
+    padding: 7px 0;
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     display: flex;
     align-items: center;
     gap: 10px;
   }
   .prize-perks li::before {
     content: '';
-    width: 5px; height: 5px;
-    background: var(--farlands-green);
+    width: 4px; height: 4px;
+    border-radius: 50%;
+    background: var(--accent-green);
     flex-shrink: 0;
   }
-  .prize-card.winner .prize-perks li::before { background: var(--ancient-gold); }
+  .prize.winner .prize-perks li::before { background: var(--accent-gold); }
 
   /* ============ TIMELINE ============ */
-  .timeline-section {
-    background: linear-gradient(180deg, #081406 0%, var(--farlands-bg) 100%);
-  }
+  .timeline-section { background: var(--bg); }
   .timeline {
     position: relative;
-    max-width: 850px;
+    max-width: 780px;
     margin: 0 auto;
   }
   .timeline::before {
@@ -732,289 +846,301 @@
     position: absolute;
     left: 50%;
     top: 0; bottom: 0;
-    width: 2px;
-    background: linear-gradient(180deg, var(--ancient-gold), var(--farlands-green));
-    transform: translateX(-50%);
+    width: 1px;
+    background: linear-gradient(180deg, var(--accent-gold), rgba(255,255,255,0.15), var(--accent-green));
+    transform: translateX(-0.5px);
   }
   .tl-item {
     position: relative;
     display: flex;
-    margin-bottom: 48px;
+    margin-bottom: 28px;
   }
   .tl-item:nth-child(odd) { justify-content: flex-start; }
   .tl-item:nth-child(even) { justify-content: flex-end; }
-  .tl-content {
-    width: 44%;
-    padding: 24px;
-    background: rgba(255, 255, 255, 0.02);
-    border: 1px solid rgba(255,255,255,0.06);
-    transition: all 0.3s;
+  .tl-card {
+    width: calc(50% - 28px);
+    padding: 22px 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    backdrop-filter: blur(8px);
+    transition: all 0.4s var(--ease-spring);
   }
-  .tl-content:hover {
-    border-color: rgba(106, 176, 76, 0.3);
-    background: rgba(106, 176, 76, 0.04);
+  .tl-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(124,179,66,0.3);
+    background: var(--surface-hover);
   }
   .tl-dot {
     position: absolute;
     left: 50%;
-    top: 28px;
-    width: 14px; height: 14px;
-    background: var(--farlands-green);
+    top: 26px;
+    width: 10px; height: 10px;
+    background: var(--accent-green);
     transform: translateX(-50%);
-    border: 3px solid #081406;
+    border: 2px solid var(--bg);
+    border-radius: 50%;
     z-index: 2;
+    transition: all 0.3s;
+  }
+  .tl-item:hover .tl-dot {
+    transform: translateX(-50%) scale(1.3);
+    box-shadow: 0 0 0 6px var(--accent-green-soft);
   }
   .tl-date {
-    font-family: 'Syne', sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    color: var(--farlands-green);
-    margin-bottom: 8px;
-  }
-  .tl-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent-green);
     margin-bottom: 6px;
   }
+  .tl-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 4px;
+    letter-spacing: -0.005em;
+  }
   .tl-desc {
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.55);
+    font-size: 12.5px;
+    color: var(--text-secondary);
     line-height: 1.6;
   }
 
   /* ============ HOW TO JOIN ============ */
-  .join-section { background: var(--farlands-bg); }
-  .join-steps {
+  .join-section { background: #0c0c0f; }
+  .join-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    counter-reset: step;
+    gap: 1px;
+    background: var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    border: 1px solid var(--border);
   }
   .join-step {
     position: relative;
-    padding: 40px 28px;
-    border: 1px solid rgba(255,255,255,0.06);
-    border-right: none;
-    counter-increment: step;
-    transition: all 0.3s;
+    padding: 36px 28px;
+    background: var(--bg-elevated);
+    transition: background 0.3s;
   }
-  .join-step:last-child { border-right: 1px solid rgba(255,255,255,0.06); }
-  .join-step:hover {
-    background: rgba(106, 176, 76, 0.05);
-    z-index: 2;
-  }
-  .join-step::before {
-    content: counter(step, decimal-leading-zero);
-    font-family: 'Syne', sans-serif;
-    font-size: 52px;
-    font-weight: 800;
-    color: rgba(106, 176, 76, 0.12);
-    line-height: 1;
-    display: block;
-    margin-bottom: 14px;
+  .join-step:hover { background: #202026; }
+  .join-step-num {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: var(--text-tertiary);
+    margin-bottom: 18px;
+    font-variant-numeric: tabular-nums;
   }
   .join-step h4 {
-    font-family: 'Syne', sans-serif;
     font-size: 17px;
-    font-weight: 700;
+    font-weight: 600;
     color: #fff;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
   }
   .join-step p {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.55);
-    line-height: 1.7;
+    color: var(--text-secondary);
+    line-height: 1.65;
   }
 
-  /* ============ VISHVAKARMA RECAP ============ */
-  .vishva-section {
-    background: var(--ancient-bg);
-    position: relative;
-    overflow: hidden;
-  }
-  .vishva-bg {
-    position: absolute;
-    inset: 0;
-    background-image: url('https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/528b3a31188342f5bf508b62e36e0a93.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298749&x-signature=r2VWuN1jAaLBj5Y8XTo4BBme9kg%3D');
-    background-size: cover;
-    background-position: center;
-    opacity: 0.12;
-  }
-  .vishva-grid {
-    position: relative;
-    z-index: 2;
+  /* ============ PREVIOUS EDITION ============ */
+  .prev-section { background: var(--bg); }
+  .prev-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 64px;
+    gap: 48px;
     align-items: center;
   }
-  .vishva-title {
+  .prev-image {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    border: 1px solid rgba(212,184,106,0.2);
+    box-shadow: var(--shadow-medium);
+  }
+  .prev-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.85) sepia(0.15);
+    transition: transform 0.8s var(--ease-smooth);
+  }
+  .prev-image:hover img { transform: scale(1.04); }
+  .prev-image-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 28px;
+    background: linear-gradient(transparent, rgba(15,15,18,0.95));
     font-family: 'Playfair Display', serif;
-    font-size: clamp(30px, 4vw, 48px);
-    font-weight: 700;
+    font-size: 22px;
+    font-weight: 500;
+    font-style: italic;
+    color: var(--accent-gold);
+  }
+  .prev-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 3.5vw, 42px);
+    font-weight: 500;
     line-height: 1.1;
-    margin-bottom: 20px;
-    background: linear-gradient(180deg, #f5e6c8, var(--ancient-gold));
+    letter-spacing: -0.015em;
+    color: #fff;
+    margin-bottom: 18px;
+  }
+  .prev-title em {
+    font-style: italic;
+    background: linear-gradient(135deg, #f5e6c0, var(--accent-gold));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
-  .vishva-desc {
+  .prev-desc {
     font-size: 15px;
-    color: rgba(245, 240, 230, 0.65);
-    line-height: 1.8;
-    margin-bottom: 28px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 32px;
   }
-  .vishva-stats {
+  .prev-stats {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16px;
+    gap: 12px;
   }
   .stat {
+    padding: 20px 16px;
     text-align: center;
-    padding: 20px 12px;
-    border: 1px solid rgba(201, 146, 60, 0.2);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    transition: all 0.3s var(--ease-spring);
   }
-  .stat-num {
+  .stat:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212,184,106,0.3);
+  }
+  .stat-n {
     font-family: 'Playfair Display', serif;
-    font-size: 36px;
-    font-weight: 700;
-    color: var(--ancient-gold);
+    font-size: 30px;
+    font-weight: 500;
+    color: var(--accent-gold);
     line-height: 1;
     margin-bottom: 6px;
   }
-  .stat-lbl {
+  .stat-l {
     font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: rgba(245, 240, 230, 0.45);
-  }
-  .vishva-visual {
-    position: relative;
-    aspect-ratio: 4/5;
-    border: 2px solid rgba(201, 146, 60, 0.25);
-    overflow: hidden;
-  }
-  .vishva-visual img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    opacity: 0.85;
-    transition: transform 0.6s;
-  }
-  .vishva-visual:hover img { transform: scale(1.05); }
-  .vishva-visual-label {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    padding: 20px;
-    background: linear-gradient(transparent, rgba(18, 12, 8, 0.98));
-    font-family: 'Playfair Display', serif;
-    font-size: 22px;
     font-weight: 600;
-    font-style: italic;
-    color: var(--ancient-gold);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
   }
 
   /* ============ CTA ============ */
   .cta-section {
-    background: var(--farlands-bg);
-    padding: 140px 64px;
-    text-align: center;
     position: relative;
+    padding: 140px 24px;
+    text-align: center;
     overflow: hidden;
+    background: var(--bg);
   }
-  .cta-section::before {
-    content: '';
+  .cta-glow {
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px; height: 700px;
-    background: radial-gradient(circle, rgba(106, 176, 76, 0.12), transparent 70%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,179,66,0.15), transparent 65%);
     pointer-events: none;
   }
   .cta-inner {
     position: relative;
     z-index: 2;
-    max-width: 640px;
+    max-width: 600px;
     margin: 0 auto;
   }
   .cta-eyebrow {
-    font-family: 'Syne', sans-serif;
     font-size: 11px;
+    font-weight: 600;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--farlands-green);
-    margin-bottom: 20px;
-    font-weight: 700;
+    color: var(--accent-green);
+    margin-bottom: 22px;
   }
   .cta-title {
-    font-family: 'Syne', sans-serif;
-    font-size: clamp(36px, 5.5vw, 64px);
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: -0.02em;
-    margin-bottom: 20px;
+    font-size: clamp(34px, 5vw, 58px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     color: #fff;
+    margin-bottom: 18px;
   }
   .cta-title em {
     font-style: normal;
-    background: linear-gradient(90deg, #a8e063, #4a9c28);
+    background: linear-gradient(135deg, #b8e986, var(--accent-green));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
   .cta-desc {
     font-size: 16px;
-    color: rgba(255, 255, 255, 0.6);
+    color: var(--text-secondary);
     margin-bottom: 40px;
     line-height: 1.7;
   }
 
   /* ============ FOOTER ============ */
   .footer {
-    background: #050d04;
-    padding: 56px 64px 32px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    background: #0a0a0c;
+    border-top: 1px solid var(--border);
+    padding: 56px 24px 28px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
   }
   .footer-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
-    margin-bottom: 40px;
+    margin-bottom: 48px;
     flex-wrap: wrap;
     gap: 32px;
   }
-  .footer-brand { max-width: 280px; }
+  .footer-brand { max-width: 300px; }
   .footer-logo {
-    font-family: 'Syne', sans-serif;
-    font-size: 26px;
-    font-weight: 800;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: #fff;
     margin-bottom: 10px;
   }
+  .footer-logo span { color: var(--accent-green); }
   .footer-tagline {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.4);
-    line-height: 1.6;
+    color: var(--text-tertiary);
+    line-height: 1.65;
   }
-  .footer-links { display: flex; gap: 56px; flex-wrap: wrap; }
+  .footer-links {
+    display: flex;
+    gap: 56px;
+    flex-wrap: wrap;
+  }
   .footer-col h5 {
-    font-family: 'Syne', sans-serif;
     font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.2em;
+    font-weight: 600;
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--farlands-green);
+    color: var(--accent-green);
     margin-bottom: 14px;
   }
   .footer-col ul { list-style: none; }
   .footer-col li { margin-bottom: 8px; }
   .footer-col a {
-    color: rgba(255, 255, 255, 0.5);
+    color: var(--text-secondary);
     text-decoration: none;
     font-size: 13px;
-    transition: color 0.3s;
+    transition: color 0.25s;
   }
   .footer-col a:hover { color: #fff; }
   .footer-bottom {
@@ -1022,17 +1148,17 @@
     justify-content: space-between;
     align-items: center;
     padding-top: 24px;
-    border-top: 1px solid rgba(255,255,255,0.05);
+    border-top: 1px solid var(--border);
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
   }
   .footer-copy {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--text-tertiary);
   }
   .footer-credit {
     font-size: 11px;
-    color: rgba(255, 255, 255, 0.35);
+    color: var(--text-tertiary);
     font-family: 'Playfair Display', serif;
     font-style: italic;
   }
@@ -1040,54 +1166,54 @@
   /* ============ REVEAL ============ */
   .reveal {
     opacity: 0;
-    transform: translateY(30px);
-    transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translateY(28px);
+    transition: opacity 0.9s var(--ease-smooth), transform 0.9s var(--ease-smooth);
   }
   .reveal.visible { opacity: 1; transform: translateY(0); }
 
   /* ============ RESPONSIVE ============ */
   @media (max-width: 1024px) {
-    .section { padding: 96px 40px; }
-    .farlands-content { padding: 100px 40px; }
     .nav-links { display: none; }
-    .nav-mobile-toggle { display: flex; }
-    .track-card.t1, .track-card.t2, .track-card.t3,
-    .track-card.t4, .track-card.t5 { grid-column: span 6; }
-    .prizes-grid { grid-template-columns: 1fr; gap: 20px; }
-    .prize-card.winner { transform: none; }
-    .mobs-row { grid-template-columns: repeat(2, 1fr); }
-    .join-steps { grid-template-columns: repeat(2, 1fr); }
-    .join-step:nth-child(2) { border-right: 1px solid rgba(255,255,255,0.06); }
-    .join-step:nth-child(3) { border-right: none; border-top: none; }
-    .vishva-grid { grid-template-columns: 1fr; gap: 40px; }
-    .cta-section { padding: 100px 40px; }
-    .footer { padding: 48px 40px 28px; }
+    .nav-mobile-btn { display: flex; }
+    .track.t1, .track.t2, .track.t3,
+    .track.t4, .track.t5 { grid-column: span 6; }
+    .prizes-grid { grid-template-columns: 1fr; gap: 12px; }
+    .prize.winner { order: -1; }
+    .chars-grid { grid-template-columns: repeat(2, 1fr); }
+    .join-grid { grid-template-columns: repeat(2, 1fr); }
+    .prev-grid { grid-template-columns: 1fr; gap: 36px; }
+    .section { padding: 96px 24px; }
+    .farlands-content { padding: 110px 24px 80px; }
   }
 
   @media (max-width: 640px) {
-    .nav { padding: 14px 20px; }
-    .nav.scrolled { padding: 12px 20px; }
-    .nav-logo { font-size: 15px; }
-    .nav-cta { padding: 8px 16px; font-size: 10px; }
-    .section { padding: 72px 24px; }
-    .farlands-content { padding: 80px 24px; }
-    .farlands-meta { gap: 24px; }
-    .btn-secondary { margin-left: 0; margin-top: 12px; }
-    .track-card.t1, .track-card.t2, .track-card.t3,
-    .track-card.t4, .track-card.t5 { grid-column: span 12; }
-    .mobs-row { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-    .timeline::before { left: 16px; }
+    .nav { padding: 10px 14px; }
+    .nav-inner { padding: 9px 14px; }
+    .nav-brand { font-size: 13px; }
+    .nav-cta { padding: 7px 14px; font-size: 11px; }
+    .hero { min-height: 560px; }
+    .hero-title { font-size: clamp(42px, 13vw, 72px); }
+    .farlands-title { font-size: clamp(38px, 11vw, 64px); }
+    .meta-grid { gap: 24px; }
+    .meta-item .v { font-size: 19px; }
+    .section { padding: 72px 18px; }
+    .section-head { margin-bottom: 44px; }
+    .track.t1, .track.t2, .track.t3,
+    .track.t4, .track.t5 { grid-column: span 12; }
+    .track { padding: 24px; }
+    .chars-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .timeline::before { left: 14px; }
     .tl-item:nth-child(n) { justify-content: flex-end; }
-    .tl-content { width: calc(100% - 40px); }
-    .tl-dot { left: 16px; }
-    .join-steps { grid-template-columns: 1fr; }
-    .join-step { border-right: 1px solid rgba(255,255,255,0.06); border-bottom: none; }
-    .join-step:last-child { border-bottom: 1px solid rgba(255,255,255,0.06); }
-    .vishva-stats { grid-template-columns: 1fr; gap: 12px; }
-    .cta-section { padding: 80px 24px; }
-    .footer { padding: 40px 24px 24px; }
+    .tl-card { width: calc(100% - 40px); padding: 18px 20px; }
+    .tl-dot { left: 14px; }
+    .join-grid { grid-template-columns: 1fr; }
+    .join-step { padding: 28px 22px; }
+    .prev-stats { grid-template-columns: 1fr; gap: 10px; }
+    .cta-section { padding: 96px 20px; }
+    .footer { padding: 44px 20px 24px; }
     .footer-links { gap: 32px; }
-    .journey-chapter .chapter-title { font-size: 28px; }
+    .hero-eyebrow { font-size: 10px; letter-spacing: 0.28em; }
+    .hero-eyebrow::before, .hero-eyebrow::after { width: 18px; }
   }
 </style>
 </head>
@@ -1095,87 +1221,95 @@
 
 <!-- LOADER -->
 <div class="loader" id="loader">
-  <div class="loader-arrow"></div>
-  <div class="loader-text">Preparing the Journey</div>
+  <div class="loader-ring"></div>
+  <div class="loader-label">Preparing the Journey</div>
 </div>
 
 <!-- NAV -->
 <nav class="nav" id="nav">
-  <div class="nav-logo">VISHVAKARMA<span class="arrow">→</span><span>FARLANDS</span></div>
-  <ul class="nav-links">
-    <li><a href="#tracks">Tracks</a></li>
-    <li><a href="#prizes">Prizes</a></li>
-    <li><a href="#timeline">Timeline</a></li>
-    <li><a href="#join">Join</a></li>
-  </ul>
-  <a href="#cta" class="nav-cta">Register</a>
-  <button class="nav-mobile-toggle" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="nav-brand-dot"></span>
+      VISHVAKARMA<span class="nav-brand-sep">→</span>
+      <span>FARLANDS</span>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#tracks">Tracks</a></li>
+      <li><a href="#prizes">Prizes</a></li>
+      <li><a href="#timeline">Timeline</a></li>
+      <li><a href="#join">Join</a></li>
+    </ul>
+    <a href="#cta" class="nav-cta">Register</a>
+  </div>
 </nav>
 
-<!-- CINEMATIC JOURNEY -->
-<section class="journey" id="journey">
-  <div class="journey-sticky">
-    <canvas id="journeyCanvas"></canvas>
-    <div class="journey-overlay">
-      <div class="journey-chapter chapter-ancient" id="chap1">
-        <p class="chapter-label">Chapter I · The Divine Forge</p>
-        <h2 class="chapter-title">Vishvakarma</h2>
-        <p class="chapter-sub">Where every creation begins</p>
-      </div>
-      <div class="journey-chapter chapter-journey" id="chap2">
-        <p class="chapter-label">Chapter II · The Arrow's Flight</p>
-        <h2 class="chapter-title">From the Divine Forge<br>to the Blocky Frontier</h2>
-      </div>
-      <div class="journey-chapter chapter-farlands" id="chap3">
-        <p class="chapter-label">Chapter III · Welcome</p>
-        <h2 class="chapter-title">THE FARLANDS</h2>
-        <p class="chapter-sub">Infinite blocks. Infinite possibilities.</p>
+<!-- HERO — VISHVAKARMA -->
+<section class="hero" id="hero">
+  <div class="hero-layer" data-parallax="0.15">
+    <img class="hero-bg-img" 
+         src="https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/493f47288ac740a69d17da4168f2e302.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=sLAjwijtrz2z5CHr1FYm0AqYFis%3D" 
+         alt="Vishvakarma">
+  </div>
+  <div class="hero-vignette"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Hackathon 2026 · Edition 02</p>
+    <h1 class="hero-title"><em>Vishvakarma</em></h1>
+    <p class="hero-subtitle">The divine architect of worlds — where every creation begins</p>
+    <div class="hero-scroll">
+      <span>Scroll to Journey</span>
+      <div class="hero-scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSITION -->
+<section class="transition" id="transition">
+  <div class="transition-sticky">
+    <div class="trans-layer trans-minecraft" id="transMc">
+      <div class="trans-img-wrap">
+        <img src="https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/fe3b7fef8bf440678760652cfeb088ff.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=ZgsfP19eqLKkSvL3NE0I2hB%2BwAQ%3D" alt="Minecraft Farlands">
       </div>
     </div>
-    <div class="scroll-hint" id="scrollHint">
-      <span>Scroll to Begin</span>
-      <div class="scroll-hint-line"></div>
+    <div class="trans-layer trans-vishva" id="transVi">
+      <div class="trans-img-wrap" id="transViImg">
+        <img src="https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/463bb3fc975a46d59f430cb4d9dfaf31.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=HH7fJWt36OCWqq377H1dy0ly%2FHk%3D" alt="Vishvakarma">
+      </div>
+    </div>
+    <div class="trans-overlay">
+      <div class="trans-text" id="transText">
+        <p class="trans-text-label">Chapter II · The Crossing</p>
+        <h2>From the divine forge<br>to the <em>blocky frontier</em></h2>
+        <p>A journey beyond the known world, into lands uncharted</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- FARLANDS HERO -->
-<section class="farlands-hero" id="farlands">
-  <div class="farlands-bg"></div>
-  <div class="farlands-overlay"></div>
+<section class="farlands" id="farlands">
+  <div class="farlands-bg">
+    <img src="https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/f4e9faeab9ff4ae0a9293b86d81a414d.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=2De7jkh04scthbxnY7ERb1%2Bhffk%3D" alt="Farlands">
+  </div>
   <div class="farlands-content">
-    <p class="farlands-eyebrow">Hackathon 2026 · Edition 02</p>
+    <p class="eyebrow">Welcome to the Farlands</p>
     <h1 class="farlands-title">
-      <span class="l1">Build the</span>
-      <span class="l2">Impossible</span>
+      Build the
+      <span class="line2">Impossible</span>
     </h1>
-    <p class="farlands-tagline">
+    <p class="farlands-desc">
       A 48-hour hackathon where creativity meets code. Mine ideas, craft solutions, 
       and forge innovations in the infinite world of the Farlands.
     </p>
-    <div class="farlands-meta">
-      <div class="meta-item">
-        <span class="meta-label">Date</span>
-        <span class="meta-value">Dec 13–15</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Duration</span>
-        <span class="meta-value">48 Hours</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Teams</span>
-        <span class="meta-value">2–4 Devs</span>
-      </div>
-      <div class="meta-item">
-        <span class="meta-label">Mode</span>
-        <span class="meta-value">Hybrid</span>
-      </div>
+    <div class="meta-grid">
+      <div class="meta-item"><span class="k">Date</span><span class="v">Dec 13–15</span></div>
+      <div class="meta-item"><span class="k">Duration</span><span class="v">48 Hours</span></div>
+      <div class="meta-item"><span class="k">Teams</span><span class="v">2–4 Devs</span></div>
+      <div class="meta-item"><span class="k">Mode</span><span class="v">Hybrid</span></div>
     </div>
-    <div>
-      <a href="#cta" class="btn-primary">Register Now →</a>
-      <a href="#tracks" class="btn-secondary">Explore Tracks</a>
+    <div class="btn-group">
+      <a href="#cta" class="btn btn-primary">Register Now</a>
+      <a href="#tracks" class="btn btn-ghost">Explore Tracks</a>
     </div>
   </div>
 </section>
@@ -1183,92 +1317,62 @@
 <!-- TRACKS -->
 <section class="section tracks-section" id="tracks">
   <div class="section-head reveal">
-    <p class="section-num">01 / Choose Your Path</p>
-    <h2 class="section-title">Five Tracks.<br>One Infinite World.</h2>
-    <p class="section-desc">
-      Each track is a unique dimension of the Farlands, waiting for builders like you 
-      to leave your mark. Pick your quest and craft something extraordinary.
-    </p>
+    <p class="section-num">01 / Tracks</p>
+    <h2 class="section-title">Choose your path.</h2>
+    <p class="section-desc">Five unique dimensions of the Farlands, each waiting for builders to leave their mark.</p>
   </div>
   <div class="tracks-grid">
-    <div class="track-card t1 reveal">
-      <div class="track-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-      </div>
+    <div class="track t1 reveal">
+      <div class="track-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
       <h3>AI & Machine Learning</h3>
-      <p>Train intelligent systems that learn, adapt, and evolve. Build neural pathways for tomorrow's digital minds. From LLMs to computer vision.</p>
-      <div class="mini-blocks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p>Train intelligent systems that learn, adapt, and evolve. Build neural pathways for tomorrow's digital minds — from LLMs to computer vision and beyond.</p>
     </div>
-    <div class="track-card t2 reveal">
-      <div class="track-icon">
-        <svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
-      </div>
+    <div class="track t2 reveal">
+      <div class="track-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
       <h3>Web3 & Blockchain</h3>
       <p>Forge decentralized systems, smart contracts, and token economies. Mine new possibilities in the crypto frontier.</p>
     </div>
-    <div class="track-card t3 reveal">
-      <div class="track-icon">
-        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-      </div>
+    <div class="track t3 reveal">
+      <div class="track-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></div>
       <h3>AR / VR / XR</h3>
-      <p>Build immersive worlds beyond the screen. Blend reality with imagination.</p>
+      <p>Build immersive worlds beyond the screen. Blend reality with imagination in spatial computing.</p>
     </div>
-    <div class="track-card t4 reveal">
-      <div class="track-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M12 6v6l4 2"/></svg>
-      </div>
+    <div class="track t4 reveal">
+      <div class="track-icon"><svg viewBox="0 0 24 24"><path d="M12 22c5.5 0 10-4.5 10-10S17.5 2 12 2 2 6.5 2 12s4.5 10 10 10z"/><path d="M12 6v6l4 2"/></svg></div>
       <h3>Climate & Sustainability</h3>
-      <p>Craft solutions for a greener world. Build tech that heals and protects our planet.</p>
+      <p>Craft solutions for a greener world. Build technology that heals and protects our planet.</p>
     </div>
-    <div class="track-card t5 reveal">
-      <div class="track-icon">
-        <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-      </div>
+    <div class="track t5 reveal">
+      <div class="track-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
       <h3>Open Innovation — Free Track</h3>
-      <p>No boundaries. No limits. Build anything that defies expectations. The most creative solutions come from the wildest ideas. Surprise us with your vision — whether it's a tool, a game, an experience, or something no one has ever seen before. This is your canvas.</p>
-      <div class="mini-blocks"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <p>No boundaries. No limits. Build anything that defies expectations. Surprise us with your vision — a tool, a game, an experience, or something no one has ever seen before. This is your canvas.</p>
     </div>
   </div>
 </section>
 
 <!-- CHARACTERS -->
-<section class="section mobs-section">
+<section class="section chars-section">
   <div class="section-head reveal">
-    <p class="section-num">02 / The Inhabitants</p>
-    <h2 class="section-title">Legends of the<br>Farlands.</h2>
-    <p class="section-desc">
-      You won't be building alone. The Farlands are home to iconic characters 
-      — some friendly, some mysterious, some best avoided after dark.
-    </p>
+    <p class="section-num">02 / Inhabitants</p>
+    <h2 class="section-title">Legends of the Farlands.</h2>
+    <p class="section-desc">You won't be building alone. Iconic characters roam these lands — some guide, some watch, some you'd rather not meet in the dark.</p>
   </div>
-  <div class="mobs-row">
-    <div class="mob-card reveal">
-      <div class="mob-art"><div class="pixel-steve"></div></div>
-      <div class="mob-info">
-        <div class="mob-name">Steve</div>
-        <div class="mob-role">The Builder · Your Spirit Guide</div>
-      </div>
+  <div class="chars-grid">
+    <div class="char-card reveal">
+      <div class="char-art"><div class="pa steve"></div></div>
+      <div class="char-info"><div class="char-name">Steve</div><div class="char-role">The Builder · Your spirit guide</div></div>
     </div>
-    <div class="mob-card reveal">
-      <div class="mob-art"><div class="pixel-herobrine"></div></div>
-      <div class="mob-info">
-        <div class="mob-name">Herobrine</div>
-        <div class="mob-role">The Myth · Watcher of Worlds</div>
-      </div>
+    <div class="char-card reveal">
+      <div class="char-art"><div class="pa herobrine"></div></div>
+      <div class="char-info"><div class="char-name">Herobrine</div><div class="char-role">The Myth · Watcher of worlds</div></div>
     </div>
-    <div class="mob-card reveal">
-      <div class="mob-art"><div class="pixel-enderman"></div></div>
-      <div class="mob-info">
-        <div class="mob-name">Enderman</div>
-        <div class="mob-role">The Silent · Teleports Ideas</div>
-      </div>
+    <div class="char-card reveal">
+      <div class="char-art"><div class="pa enderman"></div></div>
+      <div class="char-info"><div class="char-name">Enderman</div><div class="char-role">The Silent · Teleports ideas</div></div>
     </div>
-    <div class="mob-card reveal">
-      <div class="mob-art"><div class="pixel-creeper"></div></div>
-      <div class="mob-info">
-        <div class="mob-name">Creeper</div>
-        <div class="mob-role">SSSSsss... · Don't Look Away</div>
-      </div>
+    <div class="char-card reveal">
+      <div class="char-art"><div class="pa creeper"></div></div>
+      <div class="char-info"><div class="char-name">Creeper</div><div class="char-role">SSSSsss... · Don't look away</div></div>
     </div>
   </div>
 </section>
@@ -1277,14 +1381,11 @@
 <section class="section prizes-section" id="prizes">
   <div class="section-head reveal">
     <p class="section-num">03 / Treasure</p>
-    <h2 class="section-title">Claim Your<br>Reward.</h2>
-    <p class="section-desc">
-      The rarest blocks carry the greatest value. Compete for prizes that recognize 
-      craftsmanship, innovation, and daring.
-    </p>
+    <h2 class="section-title">Claim your reward.</h2>
+    <p class="section-desc">The rarest blocks carry the greatest value. Compete for prizes that recognize craftsmanship, innovation, and daring.</p>
   </div>
   <div class="prizes-grid">
-    <div class="prize-card reveal">
+    <div class="prize reveal">
       <p class="prize-rank">Second Place</p>
       <div class="prize-amount">₹75K</div>
       <p class="prize-label">Cash Prize + Perks</p>
@@ -1295,7 +1396,7 @@
         <li>Premium tool subscriptions</li>
       </ul>
     </div>
-    <div class="prize-card winner reveal">
+    <div class="prize winner reveal">
       <p class="prize-rank">★ Grand Champion</p>
       <div class="prize-amount">₹150K</div>
       <p class="prize-label">Cash Prize + Full Perks</p>
@@ -1307,7 +1408,7 @@
         <li>Feature in annual showcase</li>
       </ul>
     </div>
-    <div class="prize-card reveal">
+    <div class="prize reveal">
       <p class="prize-rank">Third Place</p>
       <div class="prize-amount">₹40K</div>
       <p class="prize-label">Cash Prize + Perks</p>
@@ -1325,57 +1426,15 @@
 <section class="section timeline-section" id="timeline">
   <div class="section-head reveal" style="text-align:center;max-width:100%;">
     <p class="section-num">04 / Schedule</p>
-    <h2 class="section-title">The Road Ahead</h2>
+    <h2 class="section-title">The road ahead.</h2>
   </div>
   <div class="timeline">
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Nov 20, 2026</p>
-        <h4 class="tl-title">Registrations Open</h4>
-        <p class="tl-desc">Form your teams of 2-4 members. Register and claim your spot in the Farlands.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Dec 06, 2026</p>
-        <h4 class="tl-title">Registration Closes</h4>
-        <p class="tl-desc">Final call for entries. Teams confirmed and participant kits dispatched.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Dec 12, 2026 · 6:00 PM</p>
-        <h4 class="tl-title">Pre-Hack Briefing</h4>
-        <p class="tl-desc">Opening ceremony, sponsor showcases, team ice-breaking, and rule briefing.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Dec 13, 2026 · 9:00 AM</p>
-        <h4 class="tl-title">Hackathon Begins</h4>
-        <p class="tl-desc">Theme revealed. Coding commences. The 48-hour countdown begins.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Dec 15, 2026 · 9:00 AM</p>
-        <h4 class="tl-title">Submissions Due</h4>
-        <p class="tl-desc">Final commits pushed. Presentations prepared. Judging begins.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
-    <div class="tl-item reveal">
-      <div class="tl-content">
-        <p class="tl-date">Dec 15, 2026 · 5:00 PM</p>
-        <h4 class="tl-title">Awards Ceremony</h4>
-        <p class="tl-desc">Winners announced. Prizes awarded. Legends born in the Farlands.</p>
-      </div>
-      <div class="tl-dot"></div>
-    </div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Nov 20, 2026</p><h4 class="tl-title">Registrations Open</h4><p class="tl-desc">Form your teams of 2-4 members and claim your spot in the Farlands.</p></div><div class="tl-dot"></div></div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Dec 06, 2026</p><h4 class="tl-title">Registration Closes</h4><p class="tl-desc">Final call for entries. Teams confirmed and participant kits dispatched.</p></div><div class="tl-dot"></div></div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Dec 12 · 6:00 PM</p><h4 class="tl-title">Pre-Hack Briefing</h4><p class="tl-desc">Opening ceremony, sponsor showcases, team ice-breaking, and rule briefing.</p></div><div class="tl-dot"></div></div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Dec 13 · 9:00 AM</p><h4 class="tl-title">Hackathon Begins</h4><p class="tl-desc">Theme revealed. Coding commences. The 48-hour countdown begins.</p></div><div class="tl-dot"></div></div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Dec 15 · 9:00 AM</p><h4 class="tl-title">Submissions Due</h4><p class="tl-desc">Final commits pushed. Presentations prepared. Judging begins.</p></div><div class="tl-dot"></div></div>
+    <div class="tl-item reveal"><div class="tl-card"><p class="tl-date">Dec 15 · 5:00 PM</p><h4 class="tl-title">Awards Ceremony</h4><p class="tl-desc">Winners announced. Prizes awarded. Legends born in the Farlands.</p></div><div class="tl-dot"></div></div>
   </div>
 </section>
 
@@ -1383,120 +1442,66 @@
 <section class="section join-section" id="join">
   <div class="section-head reveal">
     <p class="section-num">05 / How to Join</p>
-    <h2 class="section-title">Enter the Portal.</h2>
-    <p class="section-desc">
-      Four steps from the mortal realm to the Farlands. Gather your party 
-      and prepare for the adventure.
-    </p>
+    <h2 class="section-title">Enter the portal.</h2>
+    <p class="section-desc">Four steps from the mortal realm to the Farlands. Gather your party and prepare for the adventure.</p>
   </div>
-  <div class="join-steps">
-    <div class="join-step reveal">
-      <h4>Form Your Team</h4>
-      <p>Gather 2-4 skilled builders. Diversity of craft strengthens any party in the Farlands.</p>
-    </div>
-    <div class="join-step reveal">
-      <h4>Register Online</h4>
-      <p>Complete the registration form with your team details and track preference.</p>
-    </div>
-    <div class="join-step reveal">
-      <h4>Attend Briefing</h4>
-      <p>Join the pre-hack session. Understand rules, meet mentors, scout the competition.</p>
-    </div>
-    <div class="join-step reveal">
-      <h4>Build & Conquer</h4>
-      <p>48 hours of non-stop creation. Forge something extraordinary in the Farlands.</p>
-    </div>
+  <div class="join-grid">
+    <div class="join-step reveal"><p class="join-step-num">01</p><h4>Form Your Team</h4><p>Gather 2-4 skilled builders. Diversity of craft strengthens any party.</p></div>
+    <div class="join-step reveal"><p class="join-step-num">02</p><h4>Register Online</h4><p>Complete the registration form with your team details and track preference.</p></div>
+    <div class="join-step reveal"><p class="join-step-num">03</p><h4>Attend Briefing</h4><p>Join the pre-hack session. Understand rules, meet mentors, scout the field.</p></div>
+    <div class="join-step reveal"><p class="join-step-num">04</p><h4>Build & Conquer</h4><p>48 hours of non-stop creation. Forge something extraordinary in the Farlands.</p></div>
   </div>
 </section>
 
-<!-- VISHVAKARMA RECAP -->
-<section class="section vishva-section" id="previous">
-  <div class="vishva-bg"></div>
-  <div class="vishva-grid">
-    <div class="reveal">
-      <p class="hero-eyebrow" style="margin-bottom:16px;color:var(--ancient-gold);font-family:'Source Sans 3',sans-serif;font-size:11px;letter-spacing:0.35em;text-transform:uppercase;font-weight:600;">Previous Edition · 2025</p>
-      <h2 class="vishva-title">Where It All Began</h2>
-      <p class="vishva-desc">
-        The inaugural edition, Vishvakarma, brought together 500+ builders across 
-        India to craft solutions in the spirit of the divine architect. Teams 
-        forged innovations that blended ancient wisdom with modern technology, 
-        creating projects that continue to inspire.
-      </p>
-      <div class="vishva-stats">
-        <div class="stat">
-          <div class="stat-num">500+</div>
-          <div class="stat-lbl">Participants</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">120</div>
-          <div class="stat-lbl">Teams</div>
-        </div>
-        <div class="stat">
-          <div class="stat-num">48</div>
-          <div class="stat-lbl">Projects</div>
-        </div>
-      </div>
+<!-- PREVIOUS EDITION -->
+<section class="section prev-section">
+  <div class="prev-grid">
+    <div class="prev-image reveal">
+      <img src="https://p19-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/8368df443b8c43abb7053568f3a95f43.png~tplv-0es2k971ck-image.image?rcl=2026091815305867DC160CB325860E1BDE&rk3s=8e244e95&rrcfp=935dee89&x-expires=1790321459&x-signature=QJwShbtch2YIMrpNueoOMNm81zI%3D" alt="Vishvakarma 2025">
+      <div class="prev-image-label">Vishvakarma · Edition 01</div>
     </div>
-    <div class="vishva-visual reveal">
-      <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-3rsxbfecgb/rc_gen_image/528b3a31188342f5bf508b62e36e0a93.jpeg~tplv-0es2k971ck-image.image?rcl=202609181244360D7BE809F76D0AEF61BD&rk3s=8e244e95&rrcfp=02a80fc2&x-expires=1792298749&x-signature=r2VWuN1jAaLBj5Y8XTo4BBme9kg%3D" alt="Vishvakarma 2025">
-      <div class="vishva-visual-label">Vishvakarma · Edition 01</div>
+    <div class="reveal">
+      <p class="eyebrow" style="color: var(--accent-gold); margin-bottom: 18px;">Previous Edition · 2025</p>
+      <h2 class="prev-title">Where it all began with <em>Vishvakarma</em></h2>
+      <p class="prev-desc">The inaugural edition brought together 500+ builders across India to craft solutions in the spirit of the divine architect. Teams forged innovations that blended ancient wisdom with modern technology, creating projects that continue to inspire.</p>
+      <div class="prev-stats">
+        <div class="stat"><div class="stat-n">500+</div><div class="stat-l">Participants</div></div>
+        <div class="stat"><div class="stat-n">120</div><div class="stat-l">Teams</div></div>
+        <div class="stat"><div class="stat-n">48</div><div class="stat-l">Projects</div></div>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- CTA -->
 <section class="cta-section" id="cta">
+  <div class="cta-glow"></div>
   <div class="cta-inner reveal">
     <p class="cta-eyebrow">Ready to Build?</p>
-    <h2 class="cta-title">Your Journey to<br>the <em>Farlands</em><br>Begins Now.</h2>
-    <p class="cta-desc">
-      Don't just watch the world change — be the one who builds the change. 
-      Register your team and claim your place in the next chapter of innovation.
-    </p>
-    <a href="#" class="btn-primary" style="font-size:14px;padding:16px 40px;">Register for Farlands →</a>
+    <h2 class="cta-title">Your journey to the <em>Farlands</em> begins now.</h2>
+    <p class="cta-desc">Don't just watch the world change — be the one who builds it. Register your team and claim your place in the next chapter of innovation.</p>
+    <a href="#" class="btn btn-primary" style="font-size:14px;padding:15px 34px;">Register for Farlands</a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-top">
-    <div class="footer-brand">
-      <div class="footer-logo">FARLANDS</div>
-      <p class="footer-tagline">From Vishvakarma's divine forge to the infinite blocks of the Farlands. A hackathon journey.</p>
-    </div>
-    <div class="footer-links">
-      <div class="footer-col">
-        <h5>Event</h5>
-        <ul>
-          <li><a href="#tracks">Tracks</a></li>
-          <li><a href="#prizes">Prizes</a></li>
-          <li><a href="#timeline">Schedule</a></li>
-          <li><a href="#join">How to Join</a></li>
-        </ul>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">FAR<span>LANDS</span></div>
+        <p class="footer-tagline">From Vishvakarma's divine forge to the infinite blocks of the Farlands. A hackathon journey.</p>
       </div>
-      <div class="footer-col">
-        <h5>Resources</h5>
-        <ul>
-          <li><a href="#">Rules & Guidelines</a></li>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Judging Criteria</a></li>
-          <li><a href="#">Sponsor Kit</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Connect</h5>
-        <ul>
-          <li><a href="#">Discord</a></li>
-          <li><a href="#">Twitter / X</a></li>
-          <li><a href="#">LinkedIn</a></li>
-          <li><a href="#">Instagram</a></li>
-        </ul>
+      <div class="footer-links">
+        <div class="footer-col"><h5>Event</h5><ul><li><a href="#tracks">Tracks</a></li><li><a href="#prizes">Prizes</a></li><li><a href="#timeline">Schedule</a></li><li><a href="#join">How to Join</a></li></ul></div>
+        <div class="footer-col"><h5>Resources</h5><ul><li><a href="#">Rules & Guidelines</a></li><li><a href="#">FAQs</a></li><li><a href="#">Judging Criteria</a></li><li><a href="#">Sponsor Kit</a></li></ul></div>
+        <div class="footer-col"><h5>Connect</h5><ul><li><a href="#">Discord</a></li><li><a href="#">Twitter / X</a></li><li><a href="#">LinkedIn</a></li><li><a href="#">Instagram</a></li></ul></div>
       </div>
     </div>
-  </div>
-  <div class="footer-bottom">
-    <p class="footer-copy">© 2026 Farlands Hackathon. All rights reserved.</p>
-    <p class="footer-credit">From Vishvakarma's forge to the Farlands' frontier — built with passion.</p>
+    <div class="footer-bottom">
+      <p class="footer-copy">© 2026 Farlands Hackathon. All rights reserved.</p>
+      <p class="footer-credit">From Vishvakarma's forge to the Farlands' frontier — built with precision.</p>
+    </div>
   </div>
 </footer>
 
@@ -1504,450 +1509,113 @@
 (function() {
   'use strict';
 
+  // Loader
   window.addEventListener('load', function() {
     setTimeout(function() {
       var l = document.getElementById('loader');
       if (l) l.classList.add('hidden');
-    }, 600);
+    }, 700);
   });
 
+  // Nav
   var nav = document.getElementById('nav');
   var navFarlands = false;
   window.addEventListener('scroll', function() {
-    if (window.scrollY > 80) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
-    var farlands = document.getElementById('farlands');
-    if (farlands) {
-      var rect = farlands.getBoundingClientRect();
-      var shouldSwitch = rect.top < window.innerHeight * 0.5;
-      if (shouldSwitch !== navFarlands) {
-        navFarlands = shouldSwitch;
-        nav.classList.toggle('nav-farlands', shouldSwitch);
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+    var fl = document.getElementById('farlands');
+    if (fl) {
+      var r = fl.getBoundingClientRect();
+      var sw = r.top < window.innerHeight * 0.5;
+      if (sw !== navFarlands) {
+        navFarlands = sw;
+        nav.classList.toggle('farlands', sw);
       }
     }
   });
 
-  var canvas = document.getElementById('journeyCanvas');
-  if (!canvas) return;
-  var ctx = canvas.getContext('2d');
-  var journey = document.getElementById('journey');
-  var chap1 = document.getElementById('chap1');
-  var chap2 = document.getElementById('chap2');
-  var chap3 = document.getElementById('chap3');
-  var scrollHint = document.getElementById('scrollHint');
+  // Smooth scroll
+  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
+    a.addEventListener('click', function(e) {
+      var t = document.querySelector(this.getAttribute('href'));
+      if (t) {
+        e.preventDefault();
+        t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  });
 
-  var W = 0, H = 0, dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var progress = 0;
-  var isMobile = window.innerWidth < 768;
-  var PARTICLE_COUNT = isMobile ? 600 : 1400;
-  var particles = [];
-
-  function resize() {
-    var parent = canvas.parentElement;
-    W = parent.offsetWidth;
-    H = parent.offsetHeight;
-    canvas.width = W * dpr;
-    canvas.height = H * dpr;
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    isMobile = W < 768;
+  // Hero parallax
+  var heroLayer = document.querySelector('.hero-layer');
+  var heroContent = document.querySelector('.hero-content');
+  function heroParallax() {
+    if (!heroLayer) return;
+    var st = window.scrollY;
+    if (st < window.innerHeight) {
+      var p = st / window.innerHeight;
+      if (heroLayer) heroLayer.style.transform = 'translateY(' + (st * 0.15) + 'px) scale(' + (1 + p * 0.04) + ')';
+      if (heroContent) {
+        heroContent.style.transform = 'translateY(' + (st * 0.35) + 'px)';
+        heroContent.style.opacity = 1 - p * 1.2;
+      }
+    }
+    requestAnimationFrame(heroParallax);
   }
+  requestAnimationFrame(heroParallax);
 
-  function initParticles() {
-    particles = [];
-    for (var i = 0; i < PARTICLE_COUNT; i++) {
-      particles.push({
-        x: Math.random(), y: Math.random(),
-        size: 2 + Math.random() * 5,
-        delay: Math.random() * 0.4,
-        speed: 0.4 + Math.random() * 0.7,
-        seed: Math.random()
-      });
+  // Transition scroll-driven
+  var transition = document.getElementById('transition');
+  var transViImg = document.getElementById('transViImg');
+  var transMc = document.getElementById('transMc');
+  var transText = document.getElementById('transText');
+
+  function updateTransition() {
+    if (!transition) return;
+    var rect = transition.getBoundingClientRect();
+    var total = transition.offsetHeight - window.innerHeight;
+    var p = Math.max(0, Math.min(1, -rect.top / total));
+
+    if (transViImg) {
+      var scale = 1 - p * 0.55;
+      var opacity = Math.max(0, 1 - p * 1.6);
+      var y = p * -80;
+      transViImg.style.transform = 'scale(' + scale + ') translateY(' + y + 'px)';
+      transViImg.style.opacity = opacity;
+      transViImg.style.filter = 'blur(' + (p * 6) + 'px)';
+    }
+
+    if (transMc) {
+      var mcWrap = transMc.querySelector('.trans-img-wrap');
+      if (mcWrap) {
+        mcWrap.style.opacity = Math.min(1, p * 1.5);
+        mcWrap.style.transform = 'scale(' + (1.08 - p * 0.08) + ')';
+      }
+    }
+
+    if (transText) {
+      var tp = Math.max(0, Math.min(1, (p - 0.2) / 0.4));
+      transText.style.opacity = tp;
+      transText.style.transform = 'scale(' + (0.94 + tp * 0.06) + ')';
     }
   }
 
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function ease(t) { return t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t+2, 2)/2; }
-  function hexToRgb(hex) {
-    var h = hex.replace('#','');
-    return {r:parseInt(h.substr(0,2),16),g:parseInt(h.substr(2,2),16),b:parseInt(h.substr(4,2),16)};
-  }
-  function lerpColor(c1, c2, t) {
-    var a = hexToRgb(c1), b = hexToRgb(c2);
-    return 'rgb('+Math.round(lerp(a.r,b.r,t))+','+Math.round(lerp(a.g,b.g,t))+','+Math.round(lerp(a.b,b.t))+')';
-  }
-  function lerpColorObj(a, b, t) {
-    return {r:Math.round(lerp(a.r,b.r,t)),g:Math.round(lerp(a.g,b.g,t)),b:Math.round(lerp(a.b,b.b,t))};
-  }
-  function rgbStr(o) { return 'rgb('+o.r+','+o.g+','+o.b+')'; }
-
-  var gold = {r:212,g:168,b:75};
-  var green = {r:106,g:176,b:76};
-  var brown = {r:139,g:105,b:20};
-  var dark = {r:26,g:15,b:8};
-
-  function drawScene(p) {
-    ctx.clearRect(0, 0, W, H);
-
-    if (p < 0.3) {
-      // PHASE 1: Ancient Temple
-      var t = p / 0.3;
-      var vis = 0.7 + ease(t) * 0.3;
-
-      // Background
-      var bg = ctx.createLinearGradient(0,0,0,H);
-      bg.addColorStop(0, '#1a0f08');
-      bg.addColorStop(0.6, '#0d0805');
-      bg.addColorStop(1, '#050302');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0,0,W,H);
-
-      // Pillars
-      ctx.save();
-      ctx.globalAlpha = 0.5 * vis;
-      for (var i = 0; i < 5; i++) {
-        var px = W * (0.1 + i * 0.2);
-        var pg = ctx.createLinearGradient(px-30,0,px+30,0);
-        pg.addColorStop(0,'rgba(50,30,12,0.9)');
-        pg.addColorStop(0.5,'rgba(110,75,35,0.6)');
-        pg.addColorStop(1,'rgba(30,18,8,0.95)');
-        ctx.fillStyle = pg;
-        ctx.fillRect(px-25, H*0.12, 50, H*0.88);
-        ctx.fillStyle = 'rgba(150,105,50,0.5)';
-        ctx.fillRect(px-35, H*0.12, 70, 14);
-        ctx.fillRect(px-42, H*0.12-8, 84, 10);
-      }
-      ctx.restore();
-
-      // Light rays
-      ctx.save();
-      ctx.globalAlpha = 0.12 * vis;
-      for (var r = 0; r < 5; r++) {
-        var rx = W * (0.2 + r * 0.15);
-        var rg = ctx.createLinearGradient(rx,0,rx+W*0.05,H);
-        rg.addColorStop(0,'rgba(212,168,75,0.8)');
-        rg.addColorStop(1,'transparent');
-        ctx.fillStyle = rg;
-        ctx.beginPath();
-        ctx.moveTo(rx-W*0.02, 0);
-        ctx.lineTo(rx+W*0.02, 0);
-        ctx.lineTo(rx+W*0.1, H);
-        ctx.lineTo(rx-W*0.08, H);
-        ctx.closePath();
-        ctx.fill();
-      }
-      ctx.restore();
-
-      // Dust particles
-      ctx.save();
-      ctx.globalAlpha = 0.3 * vis;
-      for (var i = 0; i < particles.length; i++) {
-        var pt = particles[i];
-        var px = pt.x * W + Math.sin(p*6+pt.seed*10) * 15;
-        var py = pt.y * H + Math.cos(p*5+pt.seed*8) * 12;
-        ctx.fillStyle = '#d4a84b';
-        ctx.fillRect(px, py, pt.size*0.5, pt.size*0.5);
-      }
-      ctx.restore();
-
-      // Bow appears
-      if (t > 0.2) {
-        var bt = Math.min(1, (t-0.2)/0.5);
-        ctx.save();
-        ctx.translate(W*0.25, H*0.5);
-        ctx.globalAlpha = bt;
-        ctx.strokeStyle = '#d4a84b';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
-        ctx.arc(0, 0, 45, -Math.PI*0.4, Math.PI*0.4);
-        ctx.stroke();
-        ctx.strokeStyle = 'rgba(255,255,255,0.4)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(45*Math.cos(-Math.PI*0.4), 45*Math.sin(-Math.PI*0.4));
-        ctx.lineTo(45*Math.cos(Math.PI*0.4), 45*Math.sin(Math.PI*0.4));
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      showChapter(chap1, Math.min(1, 0.6+t*0.8) * Math.max(0,1-t*1.2));
-      showChapter(chap2, 0);
-      showChapter(chap3, 0);
-      if (scrollHint) scrollHint.style.opacity = Math.max(0, 1-t*1.5);
-    }
-    else if (p < 0.65) {
-      // PHASE 2: Arrow Flight + World Transformation
-      var t = (p-0.3)/0.35;
-      var et = ease(t);
-
-      // Sky gradient shift
-      var bg = ctx.createLinearGradient(0,0,0,H);
-      bg.addColorStop(0, lerpColor('#1a0f08','#5a8fa8',et));
-      bg.addColorStop(0.5, lerpColor('#0d0805','#7ec8e3',et));
-      bg.addColorStop(1, lerpColor('#050302','#4a9c28',et*0.4));
-      ctx.fillStyle = bg;
-      ctx.fillRect(0,0,W,H);
-
-      // Terrain forming
-      if (et > 0.1) {
-        var tt = Math.min(1, (et-0.1)/0.9);
-        var bs = Math.max(6, W/70);
-        var groundY = H*0.72;
-        var cols = Math.ceil(W/bs)+2;
-        for (var x = 0; x < cols; x++) {
-          var n = Math.sin(x*0.25)*0.4 + Math.sin(x*0.08)*0.6;
-          var th = Math.floor((0.4+n*0.3)*tt*7);
-          for (var y = 0; y < th; y++) {
-            var px = x*bs, py = groundY + y*bs;
-            var col;
-            if (y === 0) col = lerpColorObj(brown, green, tt);
-            else if (y < 3) col = lerpColorObj({r:107,g:90,b:64}, brown, tt);
-            else col = lerpColorObj({r:60,g:45,b:30}, {r:90,g:90,b:90}, tt);
-            ctx.globalAlpha = Math.min(1, tt*2 - y*0.12);
-            if (ctx.globalAlpha > 0) {
-              ctx.fillStyle = rgbStr(col);
-              ctx.fillRect(px, py, bs-1, bs-1);
-            }
-          }
-        }
-        ctx.globalAlpha = 1;
-      }
-
-      // Transformation particles
-      for (var i = 0; i < particles.length; i++) {
-        var pt = particles[i];
-        var lt = Math.max(0, Math.min(1, (t-pt.delay)/(1-pt.delay)*pt.speed));
-        var sx = pt.x * W * 0.5;
-        var ex = W*0.2 + pt.x * W * 0.7;
-        var px = lerp(sx, ex, lt);
-        var py = pt.y * H * 0.85 + Math.sin(lt*Math.PI*2+pt.seed*12) * 25 * (1-lt*0.7);
-        var col = lerpColorObj(gold, green, lt);
-        ctx.globalAlpha = 0.4 + lt * 0.4;
-        ctx.fillStyle = rgbStr(col);
-        var sz = pt.size * (0.6 + lt);
-        ctx.fillRect(px, py, sz, sz);
-      }
-      ctx.globalAlpha = 1;
-
-      // The Arrow
-      var ax = lerp(W*0.22, W*0.82, et);
-      var ay = H*0.48 + Math.sin(et*Math.PI) * H*0.06;
-      ctx.save();
-      ctx.translate(ax, ay);
-      ctx.rotate(Math.sin(et*Math.PI*0.5)*0.04);
-      // Shaft
-      ctx.fillStyle = '#8b6914';
-      ctx.fillRect(-35, -1.5, 52, 3);
-      // Head
-      ctx.fillStyle = '#d4a84b';
-      ctx.beginPath();
-      ctx.moveTo(17, -7);
-      ctx.lineTo(30, 0);
-      ctx.lineTo(17, 7);
-      ctx.closePath();
-      ctx.fill();
-      // Fletching
-      ctx.fillStyle = '#c0392b';
-      ctx.beginPath();
-      ctx.moveTo(-35, -5);
-      ctx.lineTo(-44, 0);
-      ctx.lineTo(-35, 5);
-      ctx.closePath();
-      ctx.fill();
-      // Glow
-      ctx.globalAlpha = 0.25;
-      ctx.shadowColor = '#d4a84b';
-      ctx.shadowBlur = 15;
-      ctx.fillStyle = '#f0d080';
-      ctx.fillRect(-30, -0.5, 45, 1);
-      ctx.restore();
-
-      // Motion trail
-      if (et > 0.05) {
-        ctx.save();
-        var tg = ctx.createLinearGradient(W*0.05, ay, W*0.4, ay);
-        tg.addColorStop(0,'transparent');
-        tg.addColorStop(1,'rgba(212,168,75,0.12)');
-        ctx.fillStyle = tg;
-        ctx.fillRect(W*0.05, ay-2, W*0.35, 4);
-        ctx.restore();
-      }
-
-      showChapter(chap1, Math.max(0, 1-t*2.5));
-      showChapter(chap2, Math.min(1,t*2.5) * Math.max(0,1-(t-0.45)*2.5));
-      showChapter(chap3, Math.max(0,(t-0.7)*4));
-      if (scrollHint) scrollHint.style.opacity = 0;
-    }
-    else if (p < 0.85) {
-      // PHASE 3: Portal Breakthrough
-      var t = (p-0.65)/0.2;
-      var et = ease(t);
-
-      // Bright burst bg
-      var bg = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,W*0.7);
-      bg.addColorStop(0,'rgba(255,250,220,'+(0.85*Math.min(1,t*2))+')');
-      bg.addColorStop(0.3,'rgba(168,224,99,'+(0.45*Math.min(1,t*2))+')');
-      bg.addColorStop(1,'#0a1808');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0,0,W,H);
-
-      // Portal rings
-      ctx.save();
-      for (var ring = 0; ring < 5; ring++) {
-        var rt = Math.max(0, Math.min(1, t*2 - ring*0.15));
-        if (rt <= 0) continue;
-        var rr = W*0.08 + rt * W*(0.22+ring*0.07);
-        ctx.globalAlpha = (1-rt)*0.45;
-        ctx.strokeStyle = ring%2 ? '#a8e063' : '#7ec8e3';
-        ctx.lineWidth = 3*(1-rt*0.5);
-        ctx.beginPath();
-        ctx.ellipse(W/2, H/2, rr, rr*0.55, 0, 0, Math.PI*2);
-        ctx.stroke();
-      }
-      ctx.restore();
-
-      // Blocks exploding outward
-      for (var i = 0; i < particles.length; i++) {
-        var pt = particles[i];
-        var ang = pt.seed * Math.PI * 2;
-        var dist = et * W*(0.25+pt.seed*0.45);
-        var px = W/2 + Math.cos(ang)*dist;
-        var py = H/2 + Math.sin(ang)*dist*0.55;
-        var col = lerpColorObj(gold, green, et);
-        ctx.globalAlpha = 1 - et*0.4;
-        ctx.fillStyle = rgbStr(col);
-        var sz = pt.size*(1+et*0.5);
-        ctx.fillRect(px, py, sz, sz);
-      }
-      ctx.globalAlpha = 1;
-
-      showChapter(chap1, 0);
-      showChapter(chap2, Math.max(0,1-t*3));
-      showChapter(chap3, Math.min(1, t*2.5));
-    }
-    else {
-      // PHASE 4: Farlands World
-      var t = (p-0.85)/0.15;
-      var et = ease(t);
-
-      // Sky
-      var bg = ctx.createLinearGradient(0,0,0,H);
-      bg.addColorStop(0, lerpColor('#87CEEB','#5a9bd4',et*0.3));
-      bg.addColorStop(0.6, '#7ec8e3');
-      bg.addColorStop(1, '#4a9c28');
-      ctx.fillStyle = bg;
-      ctx.fillRect(0,0,W,H);
-
-      // Sun
-      ctx.save();
-      ctx.globalAlpha = 0.9;
-      var sg = ctx.createRadialGradient(W*0.78,H*0.2,0,W*0.78,H*0.2,70);
-      sg.addColorStop(0,'#fff8dc');
-      sg.addColorStop(0.5,'#ffd700');
-      sg.addColorStop(1,'transparent');
-      ctx.fillStyle = sg;
-      ctx.beginPath();
-      ctx.arc(W*0.78, H*0.2, 70, 0, Math.PI*2);
-      ctx.fill();
-      ctx.restore();
-
-      // Clouds
-      ctx.save();
-      ctx.globalAlpha = 0.85;
-      ctx.fillStyle = '#fff';
-      var clouds = [{x:0.08,y:0.14,s:1},{x:0.38,y:0.07,s:1.3},{x:0.65,y:0.18,s:0.75}];
-      clouds.forEach(function(c){
-        var cx=W*c.x, cy=H*c.y, bs=11*c.s;
-        for(var i=0;i<6;i++) ctx.fillRect(cx+i*bs*0.65-bs, cy+(i%2)*bs*0.25, bs, bs);
-      });
-      ctx.restore();
-
-      // Farlands terrain
-      var bs = Math.max(8, W/55);
-      var groundY = H*0.62;
-      var cols = Math.ceil(W/bs)+2;
-      for(var x=0;x<cols;x++){
-        var n=Math.sin(x*0.22)*0.45+Math.sin(x*0.07)*0.7+Math.sin(x*0.5)*0.2;
-        var th=Math.floor(2+n*3);
-        for(var y=0;y<th+5;y++){
-          var px=x*bs, py=groundY+y*bs;
-          if(y===0) ctx.fillStyle='#6ab04c';
-          else if(y<3) ctx.fillStyle='#8b6914';
-          else if(y<5) ctx.fillStyle='#6b5030';
-          else ctx.fillStyle='#5a5a5a';
-          ctx.globalAlpha=0.9;
-          ctx.fillRect(px,py,bs-1,bs-1);
-          if(y===0 && x%4===0){
-            ctx.fillStyle='#4a9c28';
-            ctx.fillRect(px+2,py-3,3,4);
-          }
-        }
-      }
-      ctx.globalAlpha=1;
-
-      // Floating pixels
-      for(var i=0;i<Math.min(particles.length,50);i++){
-        var pt=particles[i];
-        var px=(pt.x*W+et*40)%W;
-        var py=pt.y*H*0.55+Math.sin(Date.now()/1000+pt.seed*10)*8;
-        ctx.globalAlpha=0.45;
-        ctx.fillStyle=i%3?'#6ab04c':'#a8e063';
-        ctx.fillRect(px,py,3,3);
-      }
-      ctx.globalAlpha=1;
-
-      showChapter(chap1,0);
-      showChapter(chap2,0);
-      showChapter(chap3,1);
-    }
-  }
-
-  function showChapter(el, opacity) {
-    if (!el) return;
-    el.style.opacity = opacity;
-    el.style.transform = 'translate(-50%, calc(-50% + ' + ((1-opacity)*18) + 'px))';
-  }
-
-  function updateProgress() {
-    var rect = journey.getBoundingClientRect();
-    var total = journey.offsetHeight - window.innerHeight;
-    progress = Math.max(0, Math.min(1, -rect.top / total));
-  }
-
-  function render() {
-    try {
-      updateProgress();
-      drawScene(progress);
-    } catch(e) {
-      console.error('Canvas error:', e);
-    }
-    requestAnimationFrame(render);
-  }
-
-  resize();
-  initParticles();
-  window.addEventListener('resize', function() { resize(); initParticles(); });
-  render();
+  window.addEventListener('scroll', updateTransition, { passive: true });
+  updateTransition();
 
   // Scroll reveal
   var reveals = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window) {
     var obs = new IntersectionObserver(function(entries) {
       entries.forEach(function(e) {
-        if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
     reveals.forEach(function(el) { obs.observe(el); });
   } else {
     reveals.forEach(function(el) { el.classList.add('visible'); });
   }
-
-  // Smooth scroll
-  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
-      var t = document.querySelector(this.getAttribute('href'));
-      if (t) { e.preventDefault(); t.scrollIntoView({behavior:'smooth'}); }
-    });
-  });
 
 })();
 </script>
