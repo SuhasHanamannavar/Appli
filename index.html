@@ -150,8 +150,9 @@
   .hero-grain {
     position: absolute;
     inset: 0;
-    opacity: 0.04;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    opacity: 0.03;
+    background-image: radial-gradient(rgba(255,255,255,0.8) 0.5px, transparent 0.5px);
+    background-size: 3px 3px;
     pointer-events: none;
   }
   .hero-inner {
@@ -412,7 +413,7 @@
     overflow: hidden;
     box-shadow: var(--shadow-deep);
     border: 1px solid rgba(212, 184, 106, 0.2);
-    will-change: transform, width, height, opacity;
+    will-change: transform, opacity;
   }
   .trans-vishva-frame img {
     width: 100%;
@@ -1279,7 +1280,7 @@
     <div class="hero-image-wrap" data-parallax="0.1">
       <div class="hero-image-accent"></div>
       <div class="hero-image-frame">
-        <img src="images/vishvakarma_statue.jpg" alt="Vishvakarma — The Divine Architect">
+        <img src="images/vishvakarma_portrait.jpg" alt="Vishvakarma — The Divine Architect">
         <div class="hero-image-label">Vishvakarma · Edition 02</div>
       </div>
     </div>
@@ -1291,7 +1292,7 @@
   <div class="transition-sticky">
     <div class="trans-layer trans-vishva" id="transVi">
       <div class="trans-vishva-frame" id="transViFrame">
-        <img src="images/vishvakarma_statue.jpg" alt="Vishvakarma">
+        <img src="images/vishvakarma_portrait.jpg" alt="Vishvakarma">
       </div>
     </div>
     <div class="trans-text" id="transText">
@@ -1543,28 +1544,41 @@
     });
   });
 
-  // Hero parallax
+  // Hero parallax — rAF throttled, stops when hero leaves viewport
   var heroText = document.querySelector('.hero-text');
   var heroImg = document.querySelector('.hero-image-wrap');
+  var heroTicking = false;
+
   function heroParallax() {
     var st = window.scrollY;
-    if (st < window.innerHeight * 1.2 && heroText && heroImg) {
-      var p = Math.min(1, st / window.innerHeight);
-      heroText.style.transform = 'translateY(' + (st * 0.25) + 'px)';
-      heroText.style.opacity = 1 - p * 1.1;
-      heroImg.style.transform = 'translateY(' + (st * 0.1) + 'px) scale(' + (1 - p * 0.03) + ')';
+    if (st > window.innerHeight * 1.3) {
+      heroTicking = false;
+      return;
     }
-    requestAnimationFrame(heroParallax);
+    if (heroText && heroImg) {
+      var p = Math.min(1, st / window.innerHeight);
+      heroText.style.transform = 'translate3d(0,' + (st * 0.25) + 'px,0)';
+      heroText.style.opacity = 1 - p * 1.1;
+      heroImg.style.transform = 'translate3d(0,' + (st * 0.1) + 'px,0) scale(' + (1 - p * 0.03) + ')';
+    }
+    heroTicking = false;
   }
-  requestAnimationFrame(heroParallax);
 
-  // Transition scroll-driven
+  function onHeroScroll() {
+    if (!heroTicking) {
+      heroTicking = true;
+      requestAnimationFrame(heroParallax);
+    }
+  }
+
+  // Transition scroll-driven — rAF throttled
   var transition = document.getElementById('transition');
   var transViFrame = document.getElementById('transViFrame');
   var transText = document.getElementById('transText');
+  var transTicking = false;
 
   function updateTransition() {
-    if (!transition) return;
+    if (!transition) { transTicking = false; return; }
     var rect = transition.getBoundingClientRect();
     var total = transition.offsetHeight - window.innerHeight;
     var p = Math.max(0, Math.min(1, -rect.top / total));
@@ -1573,9 +1587,13 @@
       var scale = 1 - p * 0.6;
       var opacity = Math.max(0, 1 - p * 1.5);
       var y = p * -60;
-      transViFrame.style.transform = 'scale(' + Math.max(0.2, scale) + ') translateY(' + y + 'px)';
+      transViFrame.style.transform = 'translate3d(0,' + y + 'px,0) scale(' + Math.max(0.2, scale) + ')';
       transViFrame.style.opacity = opacity;
-      transViFrame.style.filter = 'blur(' + (p * 5) + 'px)';
+      if (p > 0.05) {
+        transViFrame.style.filter = 'blur(' + (p * 5) + 'px)';
+      } else {
+        transViFrame.style.filter = '';
+      }
     }
 
     if (transText) {
@@ -1583,9 +1601,23 @@
       transText.style.opacity = tp;
       transText.style.transform = 'scale(' + (0.95 + tp * 0.05) + ')';
     }
+    transTicking = false;
   }
 
-  window.addEventListener('scroll', updateTransition, { passive: true });
+  function onTransScroll() {
+    if (!transTicking) {
+      transTicking = true;
+      requestAnimationFrame(updateTransition);
+    }
+  }
+
+  // Combined scroll handler
+  window.addEventListener('scroll', function() {
+    onHeroScroll();
+    onTransScroll();
+  }, { passive: true });
+
+  onHeroScroll();
   updateTransition();
 
   // Scroll reveal
