@@ -1546,8 +1546,8 @@
   var particles = [];
 
   function resize() {
-    W = canvas.offsetWidth = canvas.parentElement.offsetWidth;
-    H = canvas.offsetHeight = canvas.parentElement.offsetHeight;
+    W = canvas.parentElement.offsetWidth;
+    H = canvas.parentElement.offsetHeight;
     canvas.width = W * dpr;
     canvas.height = H * dpr;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
